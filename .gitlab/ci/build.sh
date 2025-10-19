@@ -223,9 +223,19 @@ _build() {
   local \
     _reallymakepkg_opts=() \
     _makepkg_opts=() \
+    _makedepends=() \
     _cmd=() \
-    _pkgname
+    _depend \
+    _depend_name \
+    _depend_pkgver \
+    _depend_target \
+    _home \
+    _pkgbuild \
+    _pkgname \
+    _resolve_flag
+  _home="/home/user"
   _pkgname="${pkg%-ur}"
+  _pkgbuild="${_home}/${_pkgname}/PKGBUILD"
   _reallymakepkg_opts+=(
     -v
     -w
@@ -235,12 +245,41 @@ _build() {
     -df
     --nocheck
   )
+  for _depend in $(recipe-get \
+                     "${_pkgbuild}" \
+        "makedepends"); do
+    _resolve_flag="false"
+    _depend_target="${_depend}"
+    if [[ "${_depend}" == *"<"* ]]; then
+      _depend_name="${_depend#*<}"
+      _depend_pkgver="${_depend#${_depend_name}}"
+      _resolve_flag="true"
+      _depend_target="${_depend_name}"
+    elif [[ "${_depend}" == *"="* ]]; then
+      _depend_name="${_depend#*=}"
+      _depend_pkgver="${_depend#=${_depend_name}}"
+      _resolve_flag="true"
+      _depend_target="${_depend_name}"
+    fi
+    if [[ "${_resolve_flag}" == "true" ]]; then
+      _msg=(
+        "It is requested version"
+        "'${_depend_pkgver}' of"
+        "package '${_depend_name}'."
+        "Be aware the Fur doesn't"
+        "look for provides currently."
+      )
+      _msg_info \
+        "${_msg[*]}"
+    fi
+    _makedepends+=(
+      "${_depend_target}"
+    )
+  done
   pacman \
     -S \
     --noconfirm \
-    $(recipe-get \
-        "/home/user/${_pkgname}/PKGBUILD" \
-        "makedepends")
+      "${_makedepends[@]}"
   _cmd+=(
     "cd"
       "/home/user/${_pkgname}" "&&"
