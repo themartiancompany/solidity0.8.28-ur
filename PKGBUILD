@@ -100,8 +100,9 @@ provides=(
   "solc${pkgver}=${pkgver}"
   "solc=${pkgver}"
 )
+_tarname="${_pkg}_${pkgver}"
 source=(
-  "${_pkg}-v${pkgver}.tar.gz::${url}/releases/download/v${pkgver}/${_pkg}_${pkgver}.tar.gz"
+  "${_tarname}.tar.gz::${url}/releases/download/v${pkgver}/${_tarname}.tar.gz"
 )
 sha512sums=(
   '2ddce3edfc1d570fb42d19d3164f5f7316d511bd3020c711b8176410b39432b7e137806bc63e23bb6c7381ab880c7e7e667217ab4cd8d92a6ad7e2ab145a194f'
@@ -183,7 +184,7 @@ _compile() {
     -D TESTS="${_tests}"
     -D USE_LD_GOLD="OFF"
     -D USE_SYSTEM_LIBRARIES="OFF"
-    -S "${srcdir}/${_pkg}_${pkgver}/"
+    -S "${srcdir}/${_tarname}/"
     -Wno-dev
   )
   export \
@@ -191,12 +192,12 @@ _compile() {
   CXXFLAGS="${_cxxflags[*]}" \
   cmake \
     -B \
-      "${srcdir}/${_pkg}_${pkgver}/build/" \
+      "${srcdir}/${_tarname}/build/" \
     "${_cmake_opts[@]}"
   CXXFLAGS="${_cxxflags[*]}" \
   cmake \
     --build \
-      "${srcdir}/${_pkg}_${pkgver}/build/"
+      "${srcdir}/${_tarname}/build/"
 }
 
 build()
@@ -219,11 +220,11 @@ check()
 {
   _compile \
     "ON"
-  "${srcdir}/${_pkg}_${pkgver}/build/test/soltest" \
+  "${srcdir}/${_tarname}/build/test/soltest" \
     -p \
       true -- \
     --testpath \
-      "${srcdir}/${_pkg}_${pkgver}/test/"
+      "${srcdir}/${_tarname}/test/"
   _compile \
     "OFF"
 }
@@ -249,7 +250,7 @@ package_solidity0.8.28() {
   DESTDIR="${pkgdir}/" \
   cmake \
     --install \
-      "${srcdir}/${_pkg}_${pkgver}/build/"
+      "${srcdir}/${_tarname}/build/"
   # Rename the binaries because
   # CMAKE_EXECUTABLE_SUFFIX doesn't work
   for _bin in "${_binaries[@]}"; do
@@ -261,11 +262,11 @@ package_solidity0.8.28() {
   # Install the documentation.
   install \
     -Dm644 \
-    "${srcdir}/${_pkg}_${pkgver}/README.md" \
+    "${srcdir}/${_tarname}/README.md" \
     "${pkgdir}/usr/share/doc/${pkgname}/"
   cp \
     -r \
-    "${srcdir}/${_pkg}_${pkgver}/docs/"* \
+    "${srcdir}/${_tarname}/docs/"* \
     "${pkgdir}/usr/share/doc/${pkgname}/"
   find \
     "${pkgdir}/usr/share/doc/${pkgname}/" \
