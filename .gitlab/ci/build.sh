@@ -204,7 +204,8 @@ _requirements() {
   pacman \
     -R \
     "boost" \
-    "boost-libs"
+    "boost-libs" || \
+    true
   # ohoh
   pacman \
     -Ql \
