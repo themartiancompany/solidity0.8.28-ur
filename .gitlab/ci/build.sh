@@ -201,7 +201,18 @@ _requirements() {
   fur \
     "${_fur_opts[@]}" \
     "boost1.83"
+  pacman \
+    -R \
+    "boost" \
+    "boost-libs" || \
+  true
   # ohoh
+  pacman \
+    -Ql \
+    "boost1.83"
+  pacman \
+    -Ql \
+    "boost1.83-libs"
   recipe-get \
     -v \
     "/home/user/${_pkgname}/PKGBUILD" \
