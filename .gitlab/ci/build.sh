@@ -179,6 +179,8 @@ _requirements() {
       "themartiancompany"
     -l
       "bur"
+    -D
+      "n"
   )
   fur \
     "${_fur_opts[@]}" \
