@@ -58,6 +58,7 @@ elif [[ "${_os}" == "GNU/Linux" ]]; then
 fi
 _pkg="solidity"
 pkgver="0.8.28"
+_boost_pkgver="1.83"
 _commit="7893614a31fbeacd1966994e310ed4f760772658"
 pkgbase="${_pkg}${pkgver}"
 pkgname+=(
@@ -85,11 +86,11 @@ license=(
 depends=()
 if [[ "${_os}" == "Android" ]]; then
   depends+=(
-    "boost"
+    "boost<${_boost_pkgver}"
   )
 elif [[ "${_os}" == "GNU/Linux" ]]; then
   depends+=(
-    "boost-libs"
+    "boost-libs<${_boost_pkgver}"
   )
 fi
 optdepends=(
@@ -102,12 +103,12 @@ makedepends=(
 )
 if [[ "${_os}" == "Android" ]]; then
   makedepends+=(
-    "boost-headers"
-    "boost-static"
+    "boost-headers<${_boost_pkgver}"
+    "boost-static<${_boost_pkgver}"
   )
 elif [[ "${_os}" == "GNU/Linux" ]]; then
   makedepends+=(
-    "boost"
+    "boost<${_boost_pkgver}"
   )
 fi
 checkdepends=(
