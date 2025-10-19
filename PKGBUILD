@@ -19,13 +19,20 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# Maintainer: Truocolo <truocolo@aol.com>
-# Maintainer: Truocolo <truocolo@0x6E5163fC4BFc1511Dbe06bB605cc14a3e462332b>
-# Maintainer: Pellegrino Prevete (dvorak) <pellegrinoprevete@gmail.com>
-# Maintainer: Pellegrino Prevete (dvorak) <dvorak@0x87003Bd6C074C713783df04f36517451fF34CBEf>
-# Contributor: Matheus <matheusgwdl@protonmail.com>
-# Contributor: Serge K <arch@phnx47.net>
-# Contributor: Nicola Squartini <tensor5@gmail.com>
+# Maintainers:
+#   Truocolo
+#     <truocolo@aol.com>
+#     <truocolo@0x6E5163fC4BFc1511Dbe06bB605cc14a3e462332b>
+#   Pellegrino Prevete (dvorak)
+#     <pellegrinoprevete@gmail.com>
+#     <dvorak@0x87003Bd6C074C713783df04f36517451fF34CBEf>
+# Contributors:
+#   Matheus
+#     <matheusgwdl@protonmail.com>
+#   Serge K
+#     <arch@phnx47.net>
+#   Nicola Squartini
+#     <tensor5@gmail.com>
 
 # shellcheck disable=SC2034
 # shellcheck disable=SC2154
@@ -33,8 +40,12 @@ _os="$( \
   uname \
     -o)"
 _pkg="solidity"
-pkgver="0.8.24"
-pkgname="${_pkg}${pkgver}"
+pkgver="0.8.28"
+_commit="7893614a31fbeacd1966994e310ed4f760772658"
+pkgbase="${_pkg}${pkgver}"
+pkgname+=(
+  "${pkgbase}"
+)
 pkgrel="1"
 pkgdesc="Smart contract programming language."
 arch=(
@@ -86,11 +97,8 @@ checkdepends=(
 )
 provides=(
   "${_pkg}=${pkgver}"
+  "solc${pkgver}=${pkgver}"
   "solc=${pkgver}"
-)
-conflicts=(
-  "${_pkg}-bin"
-  "${_pkg}-git"
 )
 source=(
   "${_pkg}-v${pkgver}.tar.gz::${url}/releases/download/v${pkgver}/${_pkg}_${pkgver}.tar.gz"
@@ -220,10 +228,15 @@ check()
     "OFF"
 }
 
-package() {
+package_solidity0.8.28() {
   local \
     _binaries=() \
     _bin
+  conflicts=(
+    "${_pkg}${pkgver}-bin"
+    "solc${pkgver}"
+    "solc${pkgver}-bin"
+  )
   _binaries=(
     "solc"
     "yul-phaser"
