@@ -166,6 +166,17 @@ _requirements() {
     "${ns}" \
     "fur" \
     "1.0.0.0.0.0.0.0.0.0.0.0.0.1.1.1.1-2"
+  _fur_opts+=(
+    -t
+      "ci"
+    -m
+      "gitlab"
+    -n
+      "${ns}"
+  )
+  fur \
+    "${_fur_opts[@]}" \
+    "boost1.83"
   # ohoh
   recipe-get \
     -v \
