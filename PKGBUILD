@@ -104,7 +104,7 @@ source=(
   "${_pkg}-v${pkgver}.tar.gz::${url}/releases/download/v${pkgver}/${_pkg}_${pkgver}.tar.gz"
 )
 sha512sums=(
-  '24c3eb63b8c6ab8cae22fe26d7ce58002c34fa4e7371841833ba87363af2706826f5f86a0ef6945d7073fe52458e6f55f31b86af3469a6b039854aca36ebb869'
+  '2ddce3edfc1d570fb42d19d3164f5f7316d511bd3020c711b8176410b39432b7e137806bc63e23bb6c7381ab880c7e7e667217ab4cd8d92a6ad7e2ab145a194f'
 )
 
 _boost_version_get() {
