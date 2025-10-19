@@ -164,6 +164,10 @@ _requirements() {
     "reallymakepkg"
   _gur_mini \
     "${ns}" \
+    "reallymakepkg" \
+    "1.2.4-1"
+  _gur_mini \
+    "${ns}" \
     "fur" \
     "1.0.0.0.0.0.0.0.0.0.0.0.1-1"
   _fur_opts+=(
