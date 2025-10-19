@@ -179,7 +179,7 @@ _requirements() {
       "themartiancompany"
     -l
       "bur"
-    -D
+    -R
       "n"
   )
   fur \
