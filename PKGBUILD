@@ -98,6 +98,7 @@ optdepends=(
 )
 makedepends=(
   "cmake"
+  "${_compiler}"
 )
 if [[ "${_os}" == "Android" ]]; then
   makedepends+=(
@@ -163,7 +164,23 @@ _compile() {
     _tests="${1}" \
     _boost_version \
     _cmake_opts=() \
-    _cxxflags=()
+    _cxxflags=() \
+    _cc \
+    _cxx \
+    _cxx_compiler
+  _cc="$( \
+    command \
+      -v \
+      "${_compiler}")"
+  if [[ "${_compiler}" == "gcc" ]]; then
+    _cxx_compiler="g++"
+  elif [[ "${_compiler}" == "clang" ]]; then
+   _cxx_compiler="${_compiler}++"
+  fi
+  _cxx="$( \
+    command \
+      -v \
+      "${_cxx_compiler}")"
   _cxxflags=(
     "${CXXFLAGS}"
   )
@@ -205,12 +222,18 @@ _compile() {
     -Wno-dev
   )
   export \
+    CC="${_cc}" \
+    CXX="${_cxx}" \
     CXXFLAGS="${_cxxflags[*]}"
+  CC="${_cc}" \
+  CXX="${_cxx}" \
   CXXFLAGS="${_cxxflags[*]}" \
   cmake \
     -B \
       "${srcdir}/${_tarname}/build/" \
     "${_cmake_opts[@]}"
+  CC="${_cc}" \
+  CXX="${_cxx}" \
   CXXFLAGS="${_cxxflags[*]}" \
   cmake \
     --build \
