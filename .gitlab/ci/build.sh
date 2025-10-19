@@ -91,6 +91,9 @@ _gur_mini() {
     -U \
     --noconfirm \
     "${HOME}/"*".pkg.tar.xz"
+  rm \
+    -rf \
+    "${HOME}/"*".pkg.tar.xz"
 }
 
 _fur_mini() {
@@ -149,7 +152,6 @@ _requirements() {
   _fur_mini \
     "fur" \
     "${_fur_mini_opts[@]}"
-  _fur_release="0.0.1.1.1.1.1.1.1.1.1.1.1"
   _fur_opts+=(
     -v
     -p
@@ -171,6 +173,8 @@ _requirements() {
     "fur" \
     "1.0.0.0.0.0.0.0.0.0.0.0.1-4"
   _fur_opts+=(
+    -R
+      "n"
     -t
       "tree"
     -m
@@ -179,9 +183,13 @@ _requirements() {
       "themartiancompany"
     -l
       "bur"
-    -R
-      "n"
   )
+  _msg=(
+    "Installing boost with"
+    "fur options '${_fur_opts[@]}'."
+  )
+  echo \
+    "${_msg[*]}"
   fur \
     "${_fur_opts[@]}" \
     "boost1.83"
