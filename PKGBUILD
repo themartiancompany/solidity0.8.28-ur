@@ -240,8 +240,7 @@ _compile() {
       "${srcdir}/${_tarname}/build/"
 }
 
-build()
-{
+build() {
   local \
     _tests_switch=() \
     _tests_switch_status
@@ -256,8 +255,7 @@ build()
   done
 }
 
-check()
-{
+check() {
   _compile \
     "ON"
   "${srcdir}/${_tarname}/build/test/soltest" \
