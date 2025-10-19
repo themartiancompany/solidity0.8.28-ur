@@ -207,12 +207,6 @@ _requirements() {
     "boost-libs" || \
   true
   # ohoh
-  pacman \
-    -Ql \
-    "boost1.83"
-  pacman \
-    -Ql \
-    "boost1.83-libs"
   recipe-get \
     -v \
     "/home/user/${_pkgname}/PKGBUILD" \
