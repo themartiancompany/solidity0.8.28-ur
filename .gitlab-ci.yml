@@ -130,8 +130,6 @@ build:
       - merge_requests
     changes:
       - PKGBUILD
-      - README.md
-      - COPYING
       - .gitlab-ci.yml
       - .gitlab/ci/*
   interruptible: true

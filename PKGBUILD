@@ -39,6 +39,23 @@
 _os="$( \
   uname \
     -o)"
+_evmfs_available="$( \
+  command \
+    -v \
+    "evmfs" || \
+    true)"
+if [[ ! -v "_evmfs" ]]; then
+  if [[ "${_evmfs_available}" != "" ]]; then
+    _evmfs="true"
+  elif [[ "${_evmfs_available}" == "" ]]; then
+    _evmfs="false"
+  fi
+fi
+if [[ "${_os}" == "Android" ]]; then
+  _compiler="clang"
+elif [[ "${_os}" == "GNU/Linux" ]]; then
+  _compiler="gcc"
+fi
 _pkg="solidity"
 pkgver="0.8.28"
 _commit="7893614a31fbeacd1966994e310ed4f760772658"
