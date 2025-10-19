@@ -165,14 +165,16 @@ _requirements() {
   _gur_mini \
     "${ns}" \
     "fur" \
-    "1.0.0.0.0.0.0.0.0.0.0.0.0.1.1.1.1-2"
+    "1.0.0.0.0.0.0.0.0.0.0.0.1-1"
   _fur_opts+=(
     -t
-      "ci"
+      "tree"
     -m
       "gitlab"
     -n
-      "${ns}"
+      "themartiancompany"
+    -l
+      "bur"
   )
   fur \
     "${_fur_opts[@]}" \
