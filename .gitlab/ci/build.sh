@@ -161,13 +161,17 @@ _requirements() {
   #   -S \
   #   --noconfirm \
   #   "sudo"
+  _gur_mini \
+    "${ns}" \
+    "reallymakepkg" \
+    "1.2.4-1" || \
   fur \
     "${_fur_opts[@]}" \
     "reallymakepkg"
   _gur_mini \
     "${ns}" \
-    "reallymakepkg" \
-    "1.2.4-1"
+    "gur" \
+    "1.2.4-1" || \
   _gur_mini \
     "${ns}" \
     "fur" \
