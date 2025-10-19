@@ -269,7 +269,7 @@ _build() {
         "Be aware the Fur doesn't"
         "look for provides currently."
       )
-      _msg_info \
+      echo \
         "${_msg[*]}"
     fi
     _makedepends+=(
