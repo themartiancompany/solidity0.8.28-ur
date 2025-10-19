@@ -64,7 +64,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname+=(
   "${pkgbase}"
 )
-pkgrel=6
+pkgrel=7
 pkgdesc="Smart contract programming language."
 arch=(
   "x86_64"
