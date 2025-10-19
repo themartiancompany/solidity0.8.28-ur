@@ -88,7 +88,7 @@ _gur_mini() {
     -rf \
     "${HOME}/"*".pkg.tar.xz.sig"
   pacman \
-    -Udd \
+    -U \
     --noconfirm \
     "${HOME}/"*".pkg.tar.xz"
 }
