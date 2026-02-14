@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: AGPL-3.0
+      
 
 #    ----------------------------------------------------------------------
-#    Copyright © 2024, 2025  Pellegrino Prevete
+#    Copyright © 2024, 2025, 2026  Pellegrino Prevete
 #
 #    All rights reserved
 #    ----------------------------------------------------------------------
@@ -36,10 +37,10 @@
 
 # shellcheck disable=SC2034
 # shellcheck disable=SC2154
-_os="$( \
+_os="$(
   uname \
     -o)"
-_evmfs_available="$( \
+_evmfs_available="$(
   command \
     -v \
     "evmfs" || \
@@ -51,12 +52,112 @@ if [[ ! -v "_evmfs" ]]; then
     _evmfs="false"
   fi
 fi
+_locale="$(
+  locale |
+    grep \
+      "LANG=" |
+      awk \
+        -F \
+          "=" \
+        '{print $1}')"
+if [[ ! -v "_en" ]]; then
+  _en="true"
+  if [[ "${_locale}" == "C.UTF-8" ]]; then
+    _en="true"
+  fi
+fi
+if [[ ! -v "_it" ]]; then
+  _it="true"
+  if [[ "${_locale}" == "it_IT.UTF-8" ]]; then
+    _it="true"
+  fi
+fi
+if [[ ! -v "_like" ]]; then
+  if [[ "${_it}" == "true" ]]; then
+    _like="mo-me-lo-segno"
+  fi
+  if [[ "${_en}" == "true" ]]; then
+    _like="never-gonna-give-you-up"
+  fi
+fi
+if [[ ! -v "_boost_pkgver" ]]; then
+  _boost_pkgver="$(
+    ( pacman \
+        -Qi \
+        "boost-libs" || 
+     pacman \
+       -Si \
+       "boost-libs" || \
+      pacman \
+        -Qi \
+        "boost" || \
+      pacman \
+        -Si \
+	"boost" ) |
+      grep \
+        "Version" |
+        awk \
+          '{print $3}' |
+          rev |
+            cut \
+              -d \
+                "-" \
+              -f \
+                "1" \
+              --complement |
+              rev || \
+    echo \
+      "null")"
+fi
+_boost_majver="${_boost_pkgver%.*}"
+_boost_oldest="$(
+  printf \
+    "%s\n%s" \
+    "1.89" \
+    "${_boost_majver}" |
+    sort \
+      -V |
+      head \
+        -n \
+          1)"
+if [[ ! -v "_git" ]]; then
+  _git="false"
+fi
+if [[ ! -v "_git_service" ]]; then
+  if [[ "${_boost_oldest}" == "1.89" ]]; then
+    _git_service="gitlab"
+  elif [[ "${_boost_oldest}" != "1.89" ]]; then
+    _git_service="github"
+  fi
+fi
+if [[ ! -v "_git_http" ]]; then
+  if [[ "${_git_service}" == "gitlab" ]]; then
+    _git_http="${_git_service}"
+  elif [[ "${_git_service}" == "github" ]]; then
+    _git_http="${_git_service}"
+  fi
+fi
 if [[ "${_os}" == "Android" ]]; then
   _compiler="clang"
 elif [[ "${_os}" == "GNU/Linux" ]]; then
   _compiler="gcc"
 fi
-_pkg="solidity"
+if [[ ! -v "_cmake_generator" ]]; then
+  _cmake_generator="make"
+  # _cmake_generator="ninja"
+fi
+if [[ ! -v "_archive_format" ]]; then
+  if [[ "${_git}" == "true" ]]; then
+    if [[ "${_evmfs}" == "true" ]]; then
+      _archive_format="bundle"
+    elif [[ "${_evmfs}" == "false" ]]; then
+      _archive_format="git"
+    fi
+  elif [[ "${_git}" == "false" ]]; then
+    _archive_format="tar.gz"
+  fi
+fi
+_pkg=solidity
 pkgver="0.8.28"
 _boost_pkgver="1.83"
 _commit="7893614a31fbeacd1966994e310ed4f760772658"
