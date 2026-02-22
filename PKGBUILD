@@ -288,7 +288,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=29
+pkgrel=30
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -766,8 +766,10 @@ prepare() {
             "${_range_v3_url}" \
             "${_range_v3_commit}" \
             "deps/range-v3"
-	  tree \
-            "${srcdir}/${_tarname}/deps"
+	  if [[ "${_debug}" == "true" ]]; then
+	    tree \
+              "${srcdir}/${_tarname}/deps"
+	  fi
           rm \
             "${srcdir}/${_tarname}/.gitmodules"
         elif [[ "${_git_http}" == "gitlab" ]]; then
