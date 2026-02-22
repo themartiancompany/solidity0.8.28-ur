@@ -275,6 +275,7 @@ _0_8_28_commit="7893614a31fbeacd1966994e310ed4f760772658"
 _bundle_commit="142aa62e6805505b6a06cbeeec530f5c8bf0bfdd"
 _0_8_28_1_commit="e67a5cbca580ea980920e5f01a2ac2d43a365b34"
 pkgver=0.8.28
+_fmtlib_commit="0c9fce2ffefecfdce794e1859584e25877b7b592"
 pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
@@ -313,6 +314,7 @@ else
 fi
 _http="https://${_git_http}.com"
 url="${_http}/${_ns}/${_pkg}"
+_fmtlib_url="${_http}/fmtlib/fmt"
 license=(
   "GPL-3.0-or-later"
 )
@@ -415,6 +417,8 @@ _bundle_sum="77860b58f9d6c4a9a9cb1ceaae7ebe5d856f91f3ccd96f67d5ea6a019d79d1fb"
 _bundle_sig_sum="7f737e7a88fdb8e96b428974592def4bbdf5bf24656b12ac5af76084b7fca095"
 _0_8_28_1_sum="3a174458dedac6d20314d06274fb1f9d5c47ce9620a37204e79f21fa71cc38ac"
 _0_8_28_1_sig_sum="1fe5518ce8693480af6461e6857651a0e8ce2a7aed104300b06d4bcaf9967658"
+_fmtlib_sum="SKIP"
+_fmtlib_sig_sum="SKIP"
 _github_sum="SKIP"
 _github_sig_sum="SKIP"
 _gitlab_sum="SKIP"
@@ -596,7 +600,9 @@ _git_unbundle_update() {
 prepare() {
   local \
     _cmake_version \
-    _commit_hash
+    _commit_hash \
+    _fmtlib_tarname \
+    _fmtlib_tarfile
   if [[ "${_evmfs}" == "true" ]]; then
     if [[ "${_git}" == "false" ]]; then
       ur \
@@ -669,13 +675,54 @@ prepare() {
         "f" || \
     true)"
   if [[ "${_fmtlib_available}" == "" ]]; then
-    git \
-      -C \
-        "${srcdir}/${_tarname}" \
-      submodule \
-        update \
-	--init \
-	"deps/fmtlib"
+    if [[ "${_git}" == "true" ]]; then
+      git \
+        -C \
+          "${srcdir}/${_tarname}" \
+        submodule \
+          update \
+          --init \
+          "deps/fmtlib"
+    elif [[ "${_git}" == "false" ]]; then
+      if [[ "${_evmfs}" == "false" ]]; then
+        if [[ "${_git_http}" == "github" ]]; then
+          _fmtlib_tarname="fmtlib-${_fmtlib_commit}"
+          _fmtlib_tarfile="${_fmtlib_tarname}.${_archive_format}"
+          curl \
+            -o \
+              "${srcdir}/${_fmtlib_tarfile}" \
+            "${_fmtlib_url}/archive/${_fmtlib_commit}.${_archive_format}"
+          cd \
+            "${srcdir}/${_tarname}/deps"
+          tar \
+            xf \
+            "${srcdir}/${_tarfile}"
+          mv \
+            "${_tarname}" \
+            "fmtlib"
+        elif [[ "${_git_http}" == "gitlab" ]]; then
+          _msg=(
+            "You can take an extra effort"
+            "if you want to retrieve"
+            "the sources from Gitlab"
+            "this time. Still it builds"
+            "normally."
+          )
+          echo \
+            "${_msg[*]}"
+        fi
+      elif [[ "${_evmfs}" == "true" ]]; then
+        _msg=(
+          "I may have already made"
+          "whole 'fmt' sources undeletable but then"
+          "I have packaged only 'fmt8' I'm not"
+          "sure, still it seemed quite excessive"
+          "bringing down 'fmt8' today."
+        )
+        echo \
+          "${_msg[*]}"
+      fi
+    fi
   fi
 }
 
