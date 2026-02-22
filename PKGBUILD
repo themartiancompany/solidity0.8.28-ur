@@ -275,7 +275,12 @@ _0_8_28_commit="7893614a31fbeacd1966994e310ed4f760772658"
 _bundle_commit="142aa62e6805505b6a06cbeeec530f5c8bf0bfdd"
 _0_8_28_1_commit="e67a5cbca580ea980920e5f01a2ac2d43a365b34"
 pkgver=0.8.28
+_fmtlib_pkgver=11.0.2
 _fmtlib_commit="0c9fce2ffefecfdce794e1859584e25877b7b592"
+_json_pkgver=3.11.3
+_json_commit="9cca280a4d0ccf0c08f47a99aa71d1b0e52f8d03"
+_range_v3_pkgver=0.12.0
+_range_v3_commit="a81477931a8aa2ad025c6bda0609f38e09e4d7ec"
 pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
@@ -315,6 +320,8 @@ fi
 _http="https://${_git_http}.com"
 url="${_http}/${_ns}/${_pkg}"
 _fmtlib_url="${_http}/fmtlib/fmt"
+_json_url="${_http}/nlohmann/json"
+_range_v3_url="${_http}/ericniebler/range-v3"
 license=(
   "GPL-3.0-or-later"
 )
@@ -567,6 +574,29 @@ _git_unbundle() {
   true
 }
 
+_github_tarball_submodule_get() {
+  local \
+    _project_name="${1}" \
+    _project_url="${2}" \
+    _commit="${3}" \
+    _submodule_path="${4}" \
+    _tarname \
+    _tarfile
+  _tarname="${_project_name}-${_commit}"
+  _tarfile="${_tarname}.${_archive_format}"
+  curl \
+    -o \
+      "${srcdir}/${_tarfile}" \
+    "${_project_url}/archive/${_commit}.${_archive_format}"
+  cd \
+    "${srcdir}/${_tarname}/${_submodule_path}"
+  unzip \
+    "${srcdir}/${_tarfile}"
+  mv \
+    "${_tarname}" \
+    "${_project_name}"
+}
+
 _git_unbundle_update() {
   local \
     _repo="${1}" \
@@ -686,19 +716,21 @@ prepare() {
     elif [[ "${_git}" == "false" ]]; then
       if [[ "${_evmfs}" == "false" ]]; then
         if [[ "${_git_http}" == "github" ]]; then
-          _fmtlib_tarname="fmtlib-${_fmtlib_commit}"
-          _fmtlib_tarfile="${_fmtlib_tarname}.${_archive_format}"
-          curl \
-            -o \
-              "${srcdir}/${_fmtlib_tarfile}" \
-            "${_fmtlib_url}/archive/${_fmtlib_commit}.${_archive_format}"
-          cd \
-            "${srcdir}/${_tarname}/deps"
-	  unzip \
-            "${srcdir}/${_tarfile}"
-          mv \
-            "${_tarname}" \
-            "fmtlib"
+          _github_tarball_submodule_get \
+            "fmtlib" \
+            "${_fmtlib_url}" \
+            "${_fmtlib_commit}" \
+            "deps/fmtlib"
+          _github_tarball_submodule_get \
+            "json" \
+            "${_json_url}" \
+            "${_json_commit}" \
+            "deps/nlohmann-json"
+          _github_tarball_submodule_get \
+            "range-v3" \
+            "${_range_v3_url}" \
+            "${_range_v3_commit}" \
+            "deps/range-v3"
         elif [[ "${_git_http}" == "gitlab" ]]; then
           _msg=(
             "You can take an extra effort"
