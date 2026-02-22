@@ -670,6 +670,8 @@ prepare() {
     true)"
   if [[ "${_fmtlib_available}" == "" ]]; then
     git \
+      -C \
+        "${srcdir}/${_tarname}" \
       submodule \
         update \
 	--init \
