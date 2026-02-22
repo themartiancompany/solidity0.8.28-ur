@@ -201,7 +201,8 @@ if [[ ! -v "_debug" ]]; then
   _debug="true"
 fi
 if [[ ! -v "_git" ]]; then
-  _git="${_evmfs}"
+  _git="true" # "${_evmfs}"
+  # _git="${_evmfs}"
 fi
 if [[ ! -v "_git_service" ]]; then
   if [[ "${_boost_16}" == "true" ]]; then
@@ -288,7 +289,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=30
+pkgrel=31
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -623,6 +624,7 @@ _github_tarball_submodule_get() {
   cd \
     "${srcdir}/${_tarname}/${_submodule_dir}"
   unzip \
+    -q \
     "${srcdir}/${_tarfile}"
   mv \
     "${_tarname}" \
