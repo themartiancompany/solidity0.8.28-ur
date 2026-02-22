@@ -279,7 +279,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=14
+pkgrel=16
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -784,7 +784,7 @@ _compile() {
     -D
       Boost_USE_STATIC_LIBS="${_cmake_static_opt}"
     -D
-      USE_SYSTEM_LIBRARIES="OFF"
+      USE_SYSTEM_LIBRARIES="ON"
     -D
       CMAKE_CXX_FLAGS="${_cxxflags[*]}"
     -S

@@ -441,7 +441,7 @@ _build() {
       "${_work_dir}"
   )
   _makepkg_opts+=(
-    -df
+    -f
     --nocheck
   )
   if [[ "${ns}" != "themartiancompany" ]]; then
