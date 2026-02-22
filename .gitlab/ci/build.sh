@@ -547,7 +547,18 @@ _build() {
   _cmd+=(
     "cd"
       "${_home}/${_pkgname}" "&&"
-    "_ns='${ns}'"
+  )
+  _git_http="$(
+    recipe-get \
+      "/home/user/${_pkgname}/PKGBUILD" \
+      "_git_http" || \
+      true)"
+  if [[ "${_git_http}" == "gitlab" ]]; then
+    _cmd+=(
+      "_ns='${ns}'"
+    )
+  fi
+  _cmd+=(
     "reallymakepkg"
       "${_reallymakepkg_opts[@]}"
       "--"
