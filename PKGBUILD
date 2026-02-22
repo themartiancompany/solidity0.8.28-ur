@@ -279,7 +279,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=17
+pkgrel=18
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -633,7 +633,7 @@ prepare() {
           -n \
             1 |
           awk \
-	    '{print $3}' ) ||
+            '{print $3}' ) ||
     true)"
   if [[ "${_cmake_version}" == "4."* ]]; then
     _msg=(
@@ -657,6 +657,23 @@ prepare() {
     )
     echo \
       "${_msg[*]}"
+  fi
+  _fmtlib_available="$(
+    find \
+      "${srcdir}/${_tarname}/deps/fmtlib" \
+      -mindepth \
+        1 \
+      -maxdepth \
+        1 \
+      -type \
+        "f" || \
+    true)"
+  if [[ "${_fmtlib_available}" == "" ]]; then
+    git \
+      submodule \
+        update \
+	--init \
+	"deps/fmtlib"
   fi
 }
 
