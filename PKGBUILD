@@ -197,6 +197,9 @@ if [[ ! -v "_ns" ]]; then
     _ns="themartiancompany"
   fi
 fi
+if [[ ! -v "_debug" ]]; then
+  _debug="true"
+fi
 if [[ ! -v "_git" ]]; then
   _git="${_evmfs}"
 fi
@@ -363,6 +366,11 @@ makedepends=(
   "nlohmann-json"
   "range-v3"
 )
+if [[ "${_debug}" == "true" ]]; then
+  makedepends+=(
+    "tree"
+  )
+fi
 if [[ "${_git}" == "true" ]]; then
   makedepends+=(
     "git"
@@ -758,6 +766,10 @@ prepare() {
             "${_range_v3_url}" \
             "${_range_v3_commit}" \
             "deps/range-v3"
+	  tree \
+            "${srcdir}/${_tarname}/deps"
+          rm \
+            "${srcdir}/${_tarname}/.gitmodules"
         elif [[ "${_git_http}" == "gitlab" ]]; then
           _msg=(
             "You can take an extra effort"
@@ -768,7 +780,7 @@ prepare() {
           )
           echo \
             "${_msg[*]}"
-	  exit \
+          exit \
             1
           tar \
             xf \
