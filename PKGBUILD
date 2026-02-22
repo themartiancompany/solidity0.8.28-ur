@@ -694,8 +694,7 @@ prepare() {
             "${_fmtlib_url}/archive/${_fmtlib_commit}.${_archive_format}"
           cd \
             "${srcdir}/${_tarname}/deps"
-          tar \
-            xf \
+	  unzip \
             "${srcdir}/${_tarfile}"
           mv \
             "${_tarname}" \
@@ -710,6 +709,11 @@ prepare() {
           )
           echo \
             "${_msg[*]}"
+	  exit \
+            1
+          tar \
+            xf \
+            "${srcdir}/${_tarfile}"
         fi
       elif [[ "${_evmfs}" == "true" ]]; then
         _msg=(
