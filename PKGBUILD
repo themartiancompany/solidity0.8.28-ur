@@ -285,7 +285,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=23
+pkgrel=24
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -581,15 +581,24 @@ _github_tarball_submodule_get() {
     _commit="${3}" \
     _submodule_path="${4}" \
     _oldpwd \
+    _remotefile \
     _tarname \
-    _tarfile
+    _tarfile \
+    _url
   _oldpwd="${PWD}"
   _tarname="${_project_name}-${_commit}"
   _tarfile="${_tarname}.${_archive_format}"
+  _remotefile="${_commit}.${_archive_format}"
+  _url="${_project_url}/archive/${_remotefile}"
+  _msg=(
+    "Downloading '${_url}'."
+  )
+  echo \
+    "${_msg[*]}"
   curl \
     -o \
       "${srcdir}/${_tarfile}" \
-    "${_project_url}/archive/${_commit}.${_archive_format}"
+    "${_url}"
   mkdir \
     -p \
     "${srcdir}/${_tarname}/${_submodule_path}"
@@ -600,6 +609,8 @@ _github_tarball_submodule_get() {
   mv \
     "${_tarname}" \
     "${_project_name}"
+  cd \
+    "${_oldpwd}"
 }
 
 _git_unbundle_update() {
