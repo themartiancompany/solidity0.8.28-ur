@@ -421,7 +421,7 @@ _gitlab_sum="SKIP"
 _gitlab_sig_sum="SKIP"
 _github_release_sum="SKIP"
 _github_release_sig_sum="SKIP"
-_github_release_sha512_sum=''2ddce3edfc1d570fb42d19d3164f5f7316d511bd3020c711b8176410b39432b7e137806bc63e23bb6c7381ab880c7e7e667217ab4cd8d92a6ad7e2ab14'
+_github_release_sha512_sum='2ddce3edfc1d570fb42d19d3164f5f7316d511bd3020c711b8176410b39432b7e137806bc63e23bb6c7381ab880c7e7e667217ab4cd8d92a6ad7e2ab14'
 if [[ "${_evmfs}" == "true" ]]; then
   if [[ "${_git}" == "true" ]]; then
     _sum="${_bundle_sum}"
@@ -459,7 +459,7 @@ _evmfs_address="0x69470b18f8b8b5f92b48f6199dcb147b4be96571"
 _0_8_28_1_net="1666600000"
 _0_8_28_1_address="0x1f762a05cfab651d3d95778f9c89c46545913623"
 _evmfs_dir="evmfs://${_evmfs_net}/${_evmfs_address}/${_evmfs_ns}"
-_0_5_16_2_dir="evmfs://${_0_8_28_1_net}/${_0_8_28_1_address}/${_evmfs_ns}"
+_0_8_28_1_dir="evmfs://${_0_8_28_1_net}/${_0_8_28_1_address}/${_evmfs_ns}"
 _evmfs_uri="${_evmfs_dir}/${_bundle_sum}"
 _evmfs_src="${_tarfile}::${_evmfs_uri}"
 _sig_uri="${_evmfs_dir}/${_bundle_sig_sum}"
@@ -492,7 +492,7 @@ if [[ "${_evmfs}" == "true" ]]; then
       )
       sha256sums+=(
         "${_0_8_28_1_sum}"
-        "${_0_8_28_1sig_sum}"
+        "${_0_8_28_1_sig_sum}"
       )
     fi
   fi
@@ -627,20 +627,21 @@ prepare() {
     -i \
     "${srcdir}/${_tarname}/cmake/EthCompilerSettings.cmake"
   _cmake_version="$(
-    cmake \
-      --version |
-      head \
-        -n \
-          1 |
-        awk \
-          '{print $3}')"
+    ( cmake \
+        --version |
+        head \
+          -n \
+            1 |
+          awk \
+	    '{print $3}' ) ||
+    true)"
   if [[ "${_cmake_version}" == "4."* ]]; then
     _msg=(
       "CMake version 4.x detected,"
       "applying patch for JSON"
       "preprocessor dependency."
     )
-    msg \
+    echo \
       "${_msg[*]}"
     # cd \
     #   "${_tarname}"
@@ -649,6 +650,13 @@ prepare() {
     #   -i \
     #     "${srcdir}/0001-solidity0.5.16-cmake-jsoncpp.patch" || \
     #   return 1
+  elif [[ "${_cmake_version}" == "" ]]; then
+    _msg=(
+      "No CMake version detected, assuming"
+      ">=4."
+    )
+    echo \
+      "${_msg[*]}"
   fi
 }
 
