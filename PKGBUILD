@@ -1,15 +1,16 @@
 # SPDX-License-Identifier: AGPL-3.0
-      
 
-#    ----------------------------------------------------------------------
-#    Copyright © 2024, 2025, 2026  Pellegrino Prevete
+#    ---------------------------------------------------------------
+#    Copyright © 2024, 2025, 2026
+#              Pellegrino Prevete
 #
 #    All rights reserved
-#    ----------------------------------------------------------------------
+#    ---------------------------------------------------------------
 #
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
+#    This program is free software: you can redistribute it
+#    and/or modify it under the terms of the GNU Affero
+#    General Public License as published by the Free Software
+#    Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -17,8 +18,9 @@
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU Affero General Public License for more details.
 #
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#    You should have received a copy of the GNU Affero General
+#    Public License along with this program.
+#    If not, see <https://www.gnu.org/licenses/>.
 
 # Maintainers:
 #   Truocolo
@@ -52,14 +54,18 @@ if [[ ! -v "_evmfs" ]]; then
     _evmfs="false"
   fi
 fi
-_locale="$(
-  locale |
-    grep \
-      "LANG=" |
-      awk \
-        -F \
-          "=" \
-        '{print $1}')"
+if [[ "${_os}" == "Android" ]]; then
+  _locale="C.UTF-8"
+else
+  _locale="$(
+    locale |
+      grep \
+        "LANG=" |
+        awk \
+          -F \
+            "=" \
+          '{print $1}')"
+fi
 if [[ ! -v "_en" ]]; then
   _en="true"
   if [[ "${_locale}" == "C.UTF-8" ]]; then
@@ -80,53 +86,125 @@ if [[ ! -v "_like" ]]; then
     _like="never-gonna-give-you-up"
   fi
 fi
-if [[ ! -v "_boost_pkgver" ]]; then
-  _boost_pkgver="$(
-    ( pacman \
-        -Qi \
-        "boost-libs" || 
-     pacman \
-       -Si \
-       "boost-libs" || \
-      pacman \
-        -Qi \
-        "boost" || \
-      pacman \
-        -Si \
-	"boost" ) |
-      grep \
-        "Version" |
-        awk \
-          '{print $3}' |
-          rev |
-            cut \
-              -d \
-                "-" \
-              -f \
-                "1" \
-              --complement |
+
+_boost_pkgver_get() {
+  local \
+    _modes=() \
+    _pkgs=() \
+    _cut_opts=()
+  _modes+=(
+    "Q"
+    "S"
+  )
+  _pkgs+=(
+    "boost-libs"
+    "boost"
+  )
+  _cut_opts=(
+    -d
+      "-"
+    -f
+      "1"
+    --complement
+  )
+  for _pkg in "${_pkgs[@]}"; do
+    for _mode in "${_modes[@]}"; do
+      _boost_pkgver="$(
+        ( pacman \
+            -"${_mode}"i \
+            "${_pkg}" \
+            2>"/dev/null" || \
+          true ) |
+          grep \
+            "Version" |
+            awk \
+              '{print $3}' |
+              rev |
+                cut \
+                  "${_cut_opts[@]}" |
               rev || \
-    echo \
-      "null")"
+        echo \
+          "null")"
+      if [[ "${_boost_pkgver}" != "" && \
+            "${_boost_pkgver}" != "null" ]]; then
+        break
+      fi
+    done
+  done
+}
+
+_verlte() {
+  printf \
+    '%s\n' \
+    "${1}" \
+    "${2}" |
+    sort \
+      -C \
+      -V
+}
+
+_verlt() {
+  ! _verlte \
+      "${2}" \
+      "${1}"
+}
+
+if [[ ! -v "_boost_pkgver" ]]; then
+  _boost_pkgver_get
 fi
 _boost_majver="${_boost_pkgver%.*}"
-_boost_oldest="$(
-  printf \
-    "%s\n%s" \
-    "1.89" \
-    "${_boost_majver}" |
-    sort \
-      -V |
-      head \
-        -n \
-          1)"
+_boost_16="$(
+  ( _verlt \
+      "${_boost_majver}" \
+      "1.70" && \
+      echo \
+        "true" ) || \
+    echo \
+      "false")"
+if [[ "${_boost_16}" == "false" ]]; then
+  _boost_183="$(
+    ( _verlt \
+        "${_boost_majver}" \
+        "1.83" && \
+        echo \
+          "true" ) || \
+      echo \
+        "false")"
+fi
+if [[ "${_boost_16}" == "false" && \
+      "${_boost_183}" == "false" ]]; then
+  _boost_latest="true"
+else
+  _boost_latest="false"
+fi
+# In late 2025 or 2026, according
+# to Github, Solidity publishing
+# namespace seems to have been moved
+# from 'ethereum' to 'argotorg'
+# _ns="ethereum"
+# Solidity 0.5.x requires
+# a different patchset depending
+# on the Boost version its built with
+# With Boost lesser than 1.70
+# it requires no extra patches, with boost
+# up to 1.83 it requires version 0.5.16.1
+# and with versions greater than 1.88
+# it requires version 0.5.16.2
+if [[ ! -v "_ns" ]]; then
+  if [[ "${_boost_16}" == "true" ]]; then
+    _ns="argotorg"
+  else
+    _ns="themartiancompany"
+  fi
+fi
 if [[ ! -v "_git" ]]; then
-  _git="false"
+  _git="${_evmfs}"
 fi
 if [[ ! -v "_git_service" ]]; then
-  if [[ "${_boost_oldest}" == "1.89" ]]; then
+  if [[ "${_boost_16}" == "true" ]]; then
+    _git_service="github"
+  elif [[ "${_boost_16}" == "false" ]]; then
     _git_service="gitlab"
-  elif [[ "${_boost_oldest}" != "1.89" ]]; then
     _git_service="github"
   fi
 fi
@@ -146,6 +224,33 @@ if [[ ! -v "_cmake_generator" ]]; then
   _cmake_generator="make"
   # _cmake_generator="ninja"
 fi
+_cmake_available="$(
+  command \
+    -v \
+    "cmake" || \
+  true)"
+if [[ "${_cmake_available}" != "" ]]; then
+  _cmake_version="$(
+    cmake \
+      --version |
+      head \
+        -n \
+          1 |
+        awk \
+          '{print $3}')"
+else
+  _cmake_version="4."
+fi
+if [[ "${_cmake_version}" == "4."* ]]; then
+  _cmake3="false"
+  _cmake4="true"
+elif [[ "${_cmake_version}" == "3."* ]]; then
+  _cmake3="true"
+  _cmake4="false"
+fi
+if [[ ! -v "_static" ]]; then
+  _static="false"
+fi
 if [[ ! -v "_archive_format" ]]; then
   if [[ "${_git}" == "true" ]]; then
     if [[ "${_evmfs}" == "true" ]]; then
@@ -154,19 +259,31 @@ if [[ ! -v "_archive_format" ]]; then
       _archive_format="git"
     fi
   elif [[ "${_git}" == "false" ]]; then
-    _archive_format="tar.gz"
+    if [[ "${_git_service}" == "github" ]]; then
+      if [[ "${_boost_16}" == "true" ]]; then
+        _archive_format="tar.gz"
+      elif [[ "${_boost_16}" == "false" ]]; then
+        _archive_format="zip"
+      fi
+    elif [[ "${_git_service}" == "gitlab" ]]; then
+      _archive_format="tar.gz"
+    fi
   fi
 fi
 _pkg=solidity
-pkgver="0.8.28"
-_boost_pkgver="1.83"
-_commit="7893614a31fbeacd1966994e310ed4f760772658"
+_0_8_28_commit="7893614a31fbeacd1966994e310ed4f760772658"
+_bundle_commit="142aa62e6805505b6a06cbeeec530f5c8bf0bfdd"
+_0_8_28_1_commit="e67a5cbca580ea980920e5f01a2ac2d43a365b34"
+pkgver=0.8.28
 pkgbase="${_pkg}${pkgver}"
-pkgname+=(
+pkgname=(
   "${pkgbase}"
 )
 pkgrel=11
-pkgdesc="Smart contract programming language."
+_pkgdesc=(
+  "Smart contract programming language."
+)
+pkgdesc="${_pkgdesc[*]}"
 arch=(
   "x86_64"
   "i686"
@@ -178,150 +295,498 @@ arch=(
   "powerpc"
   "pentium4"
 )
-_http="https://github.com"
-_ns="ethereum"
+if [[ "${_ns}" == "argotorg" ]]; then
+  _commit="${_0_8_28_commit}"
+else
+  if [[ "${_boost_183}" == "true" || \
+        "${_boost_latest}" == "true" ]]; then
+    if [[ "${_evmfs}" == "true" ]]; then
+      _commit="${_bundle_commit}"
+    elif [[ "${_evmfs}" == "false" ]]; then
+      if [[ "${_boost_183}" == "true" ]]; then
+        _commit="${_0_8_28_1_commit}"
+      elif [[ "${_boost_latest}" == "true" ]]; then
+        _commit="${_0_8_28_1_commit}"
+      fi
+    fi
+  fi
+fi
+_http="https://${_git_http}.com"
 url="${_http}/${_ns}/${_pkg}"
 license=(
   "GPL-3.0-or-later"
 )
 depends=()
+_boost_makedepends=(
+  "boost"
+)
 if [[ "${_os}" == "Android" ]]; then
-  depends+=(
-    "boost<${_boost_pkgver}"
+  _boost_pkgname="boost"
+  _boost_makedepends+=(
+    "boost-headers"
+    "boost-static"
   )
 elif [[ "${_os}" == "GNU/Linux" ]]; then
-  depends+=(
-    "boost-libs<${_boost_pkgver}"
+  _boost_pkgname="boost-libs"
+fi
+depends=(
+  "${_boost_pkgname}"
+  "fmt"
+  "nlohmann-json"
+  "range-v3"
+)
+if [[ "${_cmake3}" == "true" ]]; then
+  _cmake_makedepends=(
+    "cmake>3.10"
+  )
+else
+  _cmake_makedepends=(
+    "cmake>=4"
+    "patch"
   )
 fi
-optdepends=(
-  "cvc4: SMT checker"
-  "z3: SMT checker"
-)
 makedepends=(
-  "cmake"
+  "${_boost_makedepends[@]}"
+  "${_cmake_makedepends[@]}"
   "${_compiler}"
+  "${_cmake_generator}"
+  "fmt"
+  "nlohmann-json"
+  "range-v3"
 )
-if [[ "${_os}" == "Android" ]]; then
+if [[ "${_git}" == "true" ]]; then
   makedepends+=(
-    "boost-headers<${_boost_pkgver}"
-    "boost-static<${_boost_pkgver}"
+    "git"
   )
-elif [[ "${_os}" == "GNU/Linux" ]]; then
+fi
+if [[ "${_evmfs}" == "true" ]]; then
   makedepends+=(
-    "boost<${_boost_pkgver}"
+    "evmfs"
   )
 fi
 checkdepends=(
   "evmone"
+)
+group=(
+  "ethereum"
+  "hip"
 )
 provides=(
   "${_pkg}=${pkgver}"
   "solc${pkgver}=${pkgver}"
   "solc=${pkgver}"
 )
-_tarname="${_pkg}_${pkgver}"
-source=(
-  "${_tarname}.tar.gz::${url}/releases/download/v${pkgver}/${_tarname}.tar.gz"
+conflicts=(
+  "solc${pkgver}"
+  "${_pkg}-bin"
+  "${_pkg}-git"
 )
-sha512sums=(
-  '2ddce3edfc1d570fb42d19d3164f5f7316d511bd3020c711b8176410b39432b7e137806bc63e23bb6c7381ab880c7e7e667217ab4cd8d92a6ad7e2ab145a194f'
+_cvc4_optdepends=(
+  "cvc4:"
+    "SMT checker"
+)
+_z3_optdepends=(
+  "z3:"
+    "SMT checker"
+)
+optdepends=(
+  "${_cvc4_optdepends[*]}"
+  "${_z3_optdepends[*]}"
+)
+if [[ "${_git}" == "false" ]]; then
+  if [[ "${_boost_16}" == "false" ]]; then
+    _tag="${_commit}"
+    _tag_name="commit"
+    _tarname="${_pkg}-${_tag}"
+  elif [[ "${_boost_16}" == "true" ]]; then
+    _tag="${pkgver}"
+    _tag_name="pkgver"
+    _tarname="${_pkg}_${_tag}"
+  fi
+elif [[ "${_git}" == "true" ]]; then
+  _tag="${_commit}"
+  _tag_name="commit"
+  _tarname="${_pkg}-${_tag}"
+fi
+_0_8_28_1_tarname="${_pkg}-${_0_8_28_1_commit}"
+_tarfile="${_tarname}.${_archive_format}"
+_0_8_28_1_tarfile="${_0_8_28_1_tarname}.${_archive_format}"
+_bundle_sum="77860b58f9d6c4a9a9cb1ceaae7ebe5d856f91f3ccd96f67d5ea6a019d79d1fb"
+_bundle_sig_sum="7f737e7a88fdb8e96b428974592def4bbdf5bf24656b12ac5af76084b7fca095"
+_0_8_28_1_sum="3a174458dedac6d20314d06274fb1f9d5c47ce9620a37204e79f21fa71cc38ac"
+_0_8_28_1_sig_sum="1fe5518ce8693480af6461e6857651a0e8ce2a7aed104300b06d4bcaf9967658"
+_github_sum="SKIP"
+_github_sig_sum="SKIP"
+_gitlab_sum="SKIP"
+_gitlab_sig_sum="SKIP"
+_github_release_sum="SKIP"
+_github_release_sig_sum="SKIP"
+_github_release_sha512_sum=''2ddce3edfc1d570fb42d19d3164f5f7316d511bd3020c711b8176410b39432b7e137806bc63e23bb6c7381ab880c7e7e667217ab4cd8d92a6ad7e2ab14'
+if [[ "${_evmfs}" == "true" ]]; then
+  if [[ "${_git}" == "true" ]]; then
+    _sum="${_bundle_sum}"
+    _sig_sum="${_bundle_sig_sum}"
+  elif [[ "${_git}" == "false" ]]; then
+    if [[ "${_git_service}" == "github" ]]; then
+      _sum="${_github_sum}"
+      _sig_sum="${_github_sig_sum}"
+    elif [[ "${_git_service}" == "gitlab" ]]; then
+      _sum="${_gitlab_sum}"
+      _sig_sum="${_gitlab_sig_sum}"
+    fi
+  fi
+elif [[ "${_evmfs}" == "false" ]]; then
+  if [[ "${_git}" == "true" ]]; then
+    _sum="SKIP"
+    _sig_sum="SKIP"
+  elif [[ "${_git}" == "false" ]]; then
+    if [[ "${_git_service}" == "github" ]]; then
+      _sum="${_github_sum}"
+      _sig_sum="${_github_sig_sum}"
+    elif [[ "${_git_service}" == "gitlab" ]]; then
+      _sum="${_gitlab_sum}"
+      _sig_sum="${_gitlab_sig_sum}"
+    fi
+  fi
+fi
+# Dvorak
+_evmfs_ns="0x87003Bd6C074C713783df04f36517451fF34CBEf"
+_kid_ns="0x926acb6aA4790ff678848A9F1C59E578B148C786"
+# Gnosis
+_evmfs_net="100"
+_evmfs_address="0x69470b18f8b8b5f92b48f6199dcb147b4be96571"
+# Harmony
+_0_8_28_1_net="1666600000"
+_0_8_28_1_address="0x1f762a05cfab651d3d95778f9c89c46545913623"
+_evmfs_dir="evmfs://${_evmfs_net}/${_evmfs_address}/${_evmfs_ns}"
+_0_5_16_2_dir="evmfs://${_0_8_28_1_net}/${_0_8_28_1_address}/${_evmfs_ns}"
+_evmfs_uri="${_evmfs_dir}/${_bundle_sum}"
+_evmfs_src="${_tarfile}::${_evmfs_uri}"
+_sig_uri="${_evmfs_dir}/${_bundle_sig_sum}"
+_sig_src="${_tarfile}.sig::${_sig_uri}"
+_0_8_28_1_uri="${_0_8_28_1_dir}/${_0_8_28_1_sum}"
+_0_8_28_1_src="${_0_8_28_1_tarfile}::${_0_8_28_1_uri}"
+_0_8_28_1_sig_uri="${_0_8_28_1_dir}/${_0_8_28_1_sig_sum}"
+_0_8_28_1_sig_src="${_0_8_28_1_tarfile}.sig::${_0_8_28_1_sig_uri}"
+if [[ "${_evmfs}" == "true" ]]; then
+  if [[ "${_git}" == "false" ]]; then
+    makedepends+=(
+      "ur"
+      "${_like}"
+    )
+    _src=""
+    _sum=""
+  elif [[ "${_git}" == "true" ]]; then
+    _src="${_evmfs_src}"
+    _sum="${_bundle_sum}"
+    source+=(
+      "${_sig_src}"
+    )
+    sha256sums+=(
+      "${_bundle_sig_sum}"
+    )
+    if [[ "${_boost_16}" == "false" ]]; then
+      source+=(
+        "${_0_8_28_1_src}"
+        "${_0_8_28_1_sig_src}"
+      )
+      sha256sums+=(
+        "${_0_8_28_1_sum}"
+        "${_0_8_28_1sig_sum}"
+      )
+    fi
+  fi
+elif [[ "${_evmfs}" == "false" ]]; then
+  if [[ "${_git}" == true ]]; then
+    _src="${_tarname}::git+${url}#${_tag_name}=${_tag}?signed"
+    _sum="SKIP"
+  elif [[ "${_git}" == false ]]; then
+    if [[ "${_git_service}" == "github" ]]; then
+      if [[ "${_tag_name}" == "commit" ]]; then
+        _uri="${url}/archive/${_commit}.${_archive_format}"
+        _sum="SKIP"
+      elif [[ "${_tag_name}" == "pkgver" ]]; then
+        _uri="${url}/releases/download/v${pkgver}/${_tarname}.tar.gz"
+        _sum="${_github_release_sum}"
+        sha512sums=(
+          "${_github_release_sha512_sum}"
+        )
+      fi
+    elif [[ "${_git_service}" == "gitlab" ]]; then
+      if [[ "${_tag_name}" == "commit" ]]; then
+        _uri="${url}/-/archive/${_tag}/${_tag}.${_archive_format}"
+      fi
+    fi
+    _src="${_tarfile}::${_uri}"
+  fi
+fi
+if [[ -v "_src" ]]; then
+  source+=(
+    "${_src}"
+  )
+  sha256sums+=(
+    "${_sum}"
+  )
+fi
+validpgpkeys=(
+  # Truocolo
+  #   <truocolo@aol.com>
+  '97E989E6CF1D2C7F7A41FF9F95684DBE23D6A3E9'
+  #   <truocolo@0x6E5163fC4BFc1511Dbe06bB605cc14a3e462332b>
+  'F690CBC17BD1F53557290AF51FC17D540D0ADEED'
+  # Pellegrino Prevete (dvorak)
+  #   <dvorak@0x87003Bd6C074C713783df04f36517451fF34CBEf>
+  '12D8E3D7888F741E89F86EE0FEC8567A644F1D16'
 )
 
-_boost_version_get() {
-  pacman \
-    -Qi \
-    boost | \
-    grep \
-      "Version" | \
-      awk \
-        '{print $3}' | \
-        rev | \
-          cut \
-            -d \
-              "-" \
-            -f \
-	      2 | \
-            rev
+_git_unbundle() {
+  local \
+    _tarname="${1}" \
+    _bundle \
+    _repo \
+    _msg=()
+  _bundle="${srcdir}/${_tarname}.bundle"
+  _repo="${srcdir}/${_tarname}"
+  _msg=(
+    "Cloning '${_bundle}' into '${_repo}'."
+  )
+  msg \
+    "${_msg[*]}"
+  git \
+    clone \
+      "${_bundle}" \
+      "${_repo}" || \
+  git \
+    -C \
+      "${_repo}" \
+      pull || \
+  true
 }
 
-_verlte() {
-  printf \
-    '%s\n' \
-    "${1}" \
-    "${2}" | \
-    sort \
-      -C \
-      -V
+_git_unbundle_update() {
+  local \
+    _repo="${1}" \
+    _bundle="${2}" \
+    _repo \
+    _msg=()
+  _bundle_name="$(
+    basename \
+      "${_bundle}")"
+  _msg=(
+    "Updating '${_repo}' from '${_bundle}'."
+  )
+  msg \
+    "${_msg[*]}"
+  git \
+    -C \
+      "${_repo}" \
+      remote \
+        add \
+          "${_bundle_name}" \
+	  "${_bundle}" ||
+  true
+  git \
+    -C \
+      "${_repo}" \
+    pull \
+      "${_bundle_name}" || \
+  true
 }
 
-_verlt() {
-  ! _verlte \
-      "${2}" \
-      "${1}"
+prepare() {
+  local \
+    _cmake_version \
+    _commit_hash
+  if [[ "${_evmfs}" == "true" ]]; then
+    if [[ "${_git}" == "false" ]]; then
+      ur \
+        "${_like}"
+    elif [[ "${_git}" == "true" ]]; then
+      _git_unbundle \
+        "${_tarname}"
+      if [[ "${_boost_183}" == "true" ]]; then
+        _git_unbundle_update \
+          "${srcdir}/${_tarname}" \
+          "${srcdir}/${_pkg}-${_0_8_28_1_commit}"
+      elif [[ "${_boost_latest}" == "true" ]]; then
+        _git_unbundle_update \
+          "${srcdir}/${_tarname}" \
+          "${srcdir}/${_pkg}-${_0_8_28_1_commit}"
+      fi
+    fi
+  fi
+  if [[ ! -e "${srcdir}/${_tarname}/commit_hash.txt" ]]; then
+    _commit_hash="${_0_8_28_commit:0:8}"    
+    echo \
+      "${_commit_hash}" > \
+      "${srcdir}/${_tarname}/commit_hash.txt"
+  fi
+  sed \
+    -e \
+      "/-Wsign-conversion/d" \
+    -i \
+    "${srcdir}/${_tarname}/cmake/EthCompilerSettings.cmake"
+  _cmake_version="$(
+    cmake \
+      --version |
+      head \
+        -n \
+          1 |
+        awk \
+          '{print $3}')"
+  if [[ "${_cmake_version}" == "4."* ]]; then
+    _msg=(
+      "CMake version 4.x detected,"
+      "applying patch for JSON"
+      "preprocessor dependency."
+    )
+    msg \
+      "${_msg[*]}"
+    # cd \
+    #   "${_tarname}"
+    # patch \
+    #   -uNp1 \
+    #   -i \
+    #     "${srcdir}/0001-solidity0.5.16-cmake-jsoncpp.patch" || \
+    #   return 1
+  fi
+}
+
+_bin_get() {
+  local \
+    _cc \
+    _bin
+  _cc="$(
+    command \
+      -v \
+      "cc" \
+      "g++" \
+      "clang++" | \
+      head \
+        -n \
+          1)"
+  _bin="$(
+    dirname \
+      "${_cc}")"
+  echo \
+    "${_bin}"
 }
 
 _compile() {
   local \
     _tests="${1}" \
-    _boost_version \
     _cmake_opts=() \
-    _cxxflags=() \
+    _cmake_version \
     _cc \
     _cxx \
-    _cxx_compiler
-  _cc="$( \
+    _cxx_compiler \
+    _cxxflags=() \
+    _flags=() \
+    _cmake_static_opt
+  _cc="$(
     command \
       -v \
       "${_compiler}")"
+  _cxxflags=(
+    "${CXXFLAGS}"
+    -Wno-unused-but-set-variable
+    -Wno-unknown-warning-option
+    -Wno-deprecated-declarations
+    -Wno-dangling-reference
+    -Wno-overloaded-virtual
+    -Wno-range-loop-construct
+    -Wno-sign-conversion
+  )
+  if [[ "${_os}" == "Android" ]]; then
+    _cxxflags+=(
+      -Wno-unqualified-std-cast-call
+      -Wno-dangling-field
+    )
+  elif [[ "${_os}" == "GNU/Linux" ]]; then
+    _cxxflags+=(
+      # -Wno-overloaded-virtual
+    )
+  fi
   if [[ "${_compiler}" == "gcc" ]]; then
     _cxx_compiler="g++"
   elif [[ "${_compiler}" == "clang" ]]; then
    _cxx_compiler="${_compiler}++"
   fi
-  _cxx="$( \
+  _cxx="$(
     command \
       -v \
       "${_cxx_compiler}")"
-  _cxxflags=(
-    "${CXXFLAGS}"
-  )
-  if [[ "${_os}" == "Android" ]]; then
-    _cxxflags+=(
-      -Wno-unused-but-set-variable
+  _cmake_version="$(
+    cmake \
+      --version | \
+      head \
+        -n \
+          1 |
+        awk \
+          '{print $3}')"
+  if [[ "${_cmake_version}" == "4."* ]]; then
+    _cmake_opts+=(
+      -D CMAKE_POLICY_VERSION_MINIMUM=3.5
     )
-    _boost_version="$( \
-      _boost_version_get)"
-    if _verlt \
-	   "${_boost_version}" \
-	   "1.86.0"; then
-      echo \
-        "Installed boost version" \
-	"<=1.86.0, building with" \
-        "deprecated declarations." \
-        "Also be sure to use Clang" \
-	"<19.x"
-      _cxxflags+=(
-        -Wno-deprecated-declarations
-      )
-    fi
+  fi
+  if [[ "${_static}" == "true" ]]; then
+    _cmake_static_opt="ON"
+  elif [[ "${_static}" == "false" ]]; then
+    _cmake_static_opt="OFF"
+  else
+    _msg=(
+      "Unknown value '${_cmake_static_opt}'"
+      "for variable '_cmake_static_opt'."
+    )
+    echo \
+      "${_msg[*]}"
+    exit \
+      1
   fi
   _cmake_opts=(
-    -D CMAKE_BUILD_TYPE="None"
-    -D CMAKE_INSTALL_PREFIX="/usr/"
-    -D CMAKE_EXECUTABLE_SUFFIX="${pkgver}"
-    -D ONLY_BUILD_SOLIDITY_LIBRARIES="OFF"
-    -D PEDANTIC="ON"
-    -D PROFILE_OPTIMIZER_STEPS="OFF"
-    -D SOLC_LINK_STATIC="OFF"
-    -D SOLC_STATIC_STDLIBS="OFF"
-    -D STRICT_NLOHMANN_JSON_VERSION="OFF"
-    -D STRICT_Z3_VERSION="OFF"
-    -D TESTS="${_tests}"
-    -D USE_LD_GOLD="OFF"
-    -D USE_SYSTEM_LIBRARIES="OFF"
-    -S "${srcdir}/${_tarname}/"
+    # --trace-expand 
+    # -G
+    #   "Ninja"
+    -D
+      CMAKE_BUILD_TYPE="Release"
+    -D
+      CMAKE_INSTALL_PREFIX="/usr/"
+    -D
+      CMAKE_EXECUTABLE_SUFFIX="${pkgver}"
+    -D
+      ONLY_BUILD_SOLIDITY_LIBRARIES="OFF"
+    -D
+      CMAKE_VERBOSE_MAKEFILE:BOOL="ON"
+    -D
+      PEDANTIC="ON"
+    -D
+      PROFILE_OPTIMIZER_STEPS="OFF"
+    -D
+      SOLC_LINK_STATIC="${_cmake_static_opt}"
+    -D
+      SOLC_STATIC_STDLIBS="${_cmake_static_opt}"
+    -D
+      STRICT_NLOHMANN_JSON_VERSION="OFF"
+    -D
+      STRICT_Z3_VERSION="OFF"
+    -D
+      TESTS="${_tests}"
+    -D
+      USE_LD_GOLD="OFF"
+    -D
+      Boost_USE_STATIC_LIBS="${_cmake_static_opt}"
+    -D
+      USE_SYSTEM_LIBRARIES="OFF"
+    -D
+      CMAKE_CXX_FLAGS="${_cxxflags[*]}"
+    -S
+      "${srcdir}/${_tarname}/"
     -Wno-dev
+  )
+  _flags+=(
+    CC="${_cc}"
+    CXX="${_cxx}"
+    CXXFLAGS="${_cxxflags[*]}"
   )
   export \
     CC="${_cc}" \
@@ -330,6 +795,7 @@ _compile() {
   CC="${_cc}" \
   CXX="${_cxx}" \
   CXXFLAGS="${_cxxflags[*]}" \
+  VERBOSE=1 \
   cmake \
     -B \
       "${srcdir}/${_tarname}/build/" \
@@ -337,9 +803,12 @@ _compile() {
   CC="${_cc}" \
   CXX="${_cxx}" \
   CXXFLAGS="${_cxxflags[*]}" \
+  VERBOSE=1 \
   cmake \
     --build \
-      "${srcdir}/${_tarname}/build/"
+      "${srcdir}/${_tarname}/build/" # \
+    # 2>&1 > \
+    # "${srcdir}/build.log"
 }
 
 build() {
@@ -360,24 +829,19 @@ build() {
 check() {
   _compile \
     "ON"
-  "${srcdir}/${_tarname}/build/test/soltest" \
+  "${_tarname}/build/test/soltest" \
     -p \
       true -- \
     --testpath \
-      "${srcdir}/${_tarname}/test/"
+      "${_tarname}/test/"
   _compile \
     "OFF"
 }
 
-package_solidity0.8.28() {
+package() {
   local \
     _binaries=() \
     _bin
-  conflicts=(
-    "${_pkg}${pkgver}-bin"
-    "solc${pkgver}"
-    "solc${pkgver}-bin"
-  )
   _binaries=(
     "solc"
     "yul-phaser"
@@ -415,7 +879,7 @@ package_solidity0.8.28() {
     -exec \
       chmod \
         755 \
-	{} +
+        {} +
   find \
     "${pkgdir}/usr/share/doc/${pkgname}/" \
     -type \

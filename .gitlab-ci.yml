@@ -50,29 +50,30 @@ variables:
           archlinux-keyring
     
     - >  
+      export \
+        _packages=(
+          "bash"
+          "git"
+          "glab"
+          "jq"
+          "release-cli"
+          # debug
+          "inxi"
+          # extra
+          "asciidoctor"
+          "fakeroot"
+          "gnupg"
+          "make"
+          "python"
+          "shfmt"
+       )
       pacman \
         -Su \
         --needed \
         --noconfirm \
-          bash \
-          git \
-          glab \
-          jq \
-          release-cli
+          "${_packages[@]}"
 
-    # Extra packages dependencies
-    - >
-      pacman \
-        -Su \
-        --needed \
-        --noconfirm \
-          asciidoctor \
-          fakeroot \
-          gnupg \
-          make \
-          shfmt
-
-    # Save gl-dl private token in the
+    # Save private variables in the
     # container
     - >
       mkdir \
@@ -83,15 +84,28 @@ variables:
       echo \
         "${GL_DL_PRIVATE_TOKEN}" > \
         "/root/.config/gitlab.com/default.txt"
-      echo \
-        "${BUR_GPG_KEY}" | \
-        base64 \
-          -d > \
-        "/root/bur.asc"
-      gpg \
-        --import \
-          "/root/bur.asc" || \
-        true
+      cp \
+        "/root/.config/gitlab.com/default.txt" \
+        "/root/.config/gitlab.com/${CI_PROJECT_NAMESPACE}.txt"
+      if [[ "${BUR_GPG_KEY}" == "" ]]; then
+        _msg=(
+          "Missing Bur GPG key."
+          "No artifacts or"
+          "releases will be produced."
+        )
+        echo \
+          "${_msg[*]}"
+      else 
+        echo \
+          "${BUR_GPG_KEY}" | \
+          base64 \
+            -d > \
+          "/root/bur.asc"
+        gpg \
+          --import \
+            "/root/bur.asc" || \
+          true
+      fi
 
     # Setup user
     - >
@@ -99,7 +113,7 @@ variables:
         "user"
       mkdir \
         -p \
-        "/home/user"
+        "/home/user/ramdisk"
       chmod \
         700 \
         "/home/user"
@@ -107,10 +121,34 @@ variables:
         -r \
         "/builds/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}" \
         "/home/user/${CI_PROJECT_NAME%-ur}"
+
+    # Setup ram disk
+    - >
+      _mem_free="$( \
+        free | \
+          grep \
+            "Mem:" | \
+          awk \
+            '{print $4}')"
+      echo \
+        "Free memory: '${_mem_free}'"
+      _ramdisk_size="$(( \
+        "${_mem_free}" / 2000 ))"
+      mount \
+        -o \
+          "size=${_ramdisk_size}M" \
+        -t \
+          "tmpfs" \
+        none \
+          "/home/user/ramdisk"
       chown \
         -R \
         "user:user" \
         "/home/user"
+      chmod \
+        700 \
+        "/home/user/ramdisk" 
+      mount
   script:
     - ./.gitlab/ci/build.sh ${BUILD_SCRIPT_ARGS}
 
@@ -143,6 +181,10 @@ release:
   artifacts:
     reports:
       metrics: output/metrics.txt
+    when: on_failure
+    paths:
+      - build-directory.tar.xz
+
   stage: build
   extends: .release
   parallel:
