@@ -279,7 +279,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=16
+pkgrel=17
 _pkgdesc=(
   "Smart contract programming language."
 )
