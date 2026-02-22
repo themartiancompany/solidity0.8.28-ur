@@ -285,7 +285,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=28
+pkgrel=29
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -618,7 +618,8 @@ _github_tarball_submodule_get() {
     "${srcdir}/${_tarfile}"
   mv \
     "${_tarname}" \
-    "${_project_name}"
+    "$(basename \
+         "${_submodule_path}")"
   cd \
     "${_oldpwd}"
 }
