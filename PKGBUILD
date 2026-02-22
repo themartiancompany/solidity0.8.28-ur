@@ -285,7 +285,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=24
+pkgrel=25
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -366,6 +366,11 @@ makedepends=(
 if [[ "${_git}" == "true" ]]; then
   makedepends+=(
     "git"
+  )
+elif [[ "${_git}" == "false" ]]; then
+  makedepends+=(
+    "curl"
+    "unzip"
   )
 fi
 if [[ "${_evmfs}" == "true" ]]; then
@@ -596,6 +601,7 @@ _github_tarball_submodule_get() {
   echo \
     "${_msg[*]}"
   curl \
+    -L \
     -o \
       "${srcdir}/${_tarfile}" \
     "${_url}"
