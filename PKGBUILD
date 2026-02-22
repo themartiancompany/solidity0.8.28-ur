@@ -285,7 +285,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=27
+pkgrel=28
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -743,7 +743,7 @@ prepare() {
       if [[ "${_evmfs}" == "false" ]]; then
         if [[ "${_git_http}" == "github" ]]; then
           _github_tarball_submodule_get \
-            "fmtlib" \
+            "fmt" \
             "${_fmtlib_url}" \
             "${_fmtlib_commit}" \
             "deps/fmtlib"
