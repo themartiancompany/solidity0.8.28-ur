@@ -871,7 +871,7 @@ _compile() {
         awk \
           '{print $3}')"
   _msg=(
-    "CMake version '${_cmake_version}'.
+    "CMake version '${_cmake_version}'."
   )
   echo \
     "${_msg[*]}"
