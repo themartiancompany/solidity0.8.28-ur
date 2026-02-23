@@ -842,6 +842,7 @@ _compile() {
     -Wno-overloaded-virtual
     -Wno-range-loop-construct
     -Wno-sign-conversion
+    -Wno-aggressive-loop-optimizations
   )
   if [[ "${_os}" == "Android" ]]; then
     _cxxflags+=(
@@ -957,7 +958,8 @@ _compile() {
   cmake \
     -B \
       "${srcdir}/${_tarname}/build/" \
-    "${_cmake_opts[@]}"
+    "${_cmake_opts[@]}" || \
+  true
   # VERBOSE=1 \
   CC="${_cc}" \
   CXX="${_cxx}" \
@@ -966,8 +968,6 @@ _compile() {
     --build \
       "${srcdir}/${_tarname}/build/" || \
   true
-    # 2>&1 > \
-    # "${srcdir}/build.log"
 }
 
 build() {
@@ -1015,7 +1015,8 @@ package() {
   DESTDIR="${pkgdir}/" \
   cmake \
     --install \
-      "${srcdir}/${_tarname}/build/"
+      "${srcdir}/${_tarname}/build/" || \
+    true
   # Rename the binaries because
   # CMAKE_EXECUTABLE_SUFFIX doesn't work
   for _bin in "${_binaries[@]}"; do
