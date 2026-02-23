@@ -964,7 +964,7 @@ _compile() {
   CXXFLAGS="${_cxxflags[*]}" \
   cmake \
     --build \
-      "${srcdir}/${_tarname}/build/" ||
+      "${srcdir}/${_tarname}/build/" || \
   true
     # 2>&1 > \
     # "${srcdir}/build.log"
