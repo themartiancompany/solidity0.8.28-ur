@@ -716,13 +716,6 @@ prepare() {
     )
     echo \
       "${_msg[*]}"
-    # cd \
-    #   "${_tarname}"
-    # patch \
-    #   -uNp1 \
-    #   -i \
-    #     "${srcdir}/0001-solidity0.5.16-cmake-jsoncpp.patch" || \
-    #   return 1
   elif [[ "${_cmake_version}" == "" ]]; then
     _msg=(
       "No CMake version detected, assuming"
@@ -877,6 +870,11 @@ _compile() {
           1 |
         awk \
           '{print $3}')"
+  _msg=(
+    "CMake version '${_cmake_version}'.
+  )
+  echo \
+    "${_msg[*]}"
   if [[ "${_cmake_version}" == "4."* ]]; then
     _cmake_opts+=(
       -D CMAKE_POLICY_VERSION_MINIMUM=3.5
@@ -928,6 +926,8 @@ _compile() {
       USE_LD_GOLD="OFF"
     -D
       Boost_USE_STATIC_LIBS="${_cmake_static_opt}"
+    -D
+      IGNORE_VENDORED_DEPENDENCIES="ON"
     -D
       USE_SYSTEM_LIBRARIES="ON"
     -D
@@ -982,11 +982,11 @@ build() {
 check() {
   _compile \
     "ON"
-  "${_tarname}/build/test/soltest" \
+  "${srcdir}/${_tarname}/build/test/soltest" \
     -p \
       true -- \
     --testpath \
-      "${_tarname}/test/"
+      "${srcdir}/${_tarname}/test/"
   _compile \
     "OFF"
 }
