@@ -894,6 +894,11 @@ _compile() {
     exit \
       1
   fi
+  if [[ "${_git}" == "true" ]]; then
+    _vendored_deps="OFF"
+  elif [[ "${_git}" == "false" ]]; then
+    _vendored_deps="ON"
+  fi
   _cmake_opts=(
     # --trace-expand 
     # -G
@@ -922,14 +927,14 @@ _compile() {
       STRICT_Z3_VERSION="OFF"
     -D
       TESTS="${_tests}"
-    -D
-      USE_LD_GOLD="OFF"
+    # -D
+    #   USE_LD_GOLD="OFF"
     -D
       Boost_USE_STATIC_LIBS="${_cmake_static_opt}"
     -D
-      IGNORE_VENDORED_DEPENDENCIES="ON"
-    -D
-      USE_SYSTEM_LIBRARIES="ON"
+      IGNORE_VENDORED_DEPENDENCIES="${_vendored_deps}"
+    # -D
+    #   USE_SYSTEM_LIBRARIES="ON"
     -D
       CMAKE_CXX_FLAGS="${_cxxflags[*]}"
     -S
