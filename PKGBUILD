@@ -911,8 +911,8 @@ _compile() {
       CMAKE_EXECUTABLE_SUFFIX="${pkgver}"
     -D
       ONLY_BUILD_SOLIDITY_LIBRARIES="OFF"
-    -D
-      CMAKE_VERBOSE_MAKEFILE:BOOL="ON"
+    # -D
+    #   CMAKE_VERBOSE_MAKEFILE:BOOL="ON"
     -D
       PEDANTIC="ON"
     -D
@@ -950,18 +950,18 @@ _compile() {
     CC="${_cc}" \
     CXX="${_cxx}" \
     CXXFLAGS="${_cxxflags[*]}"
+  # VERBOSE=1 \
   CC="${_cc}" \
   CXX="${_cxx}" \
   CXXFLAGS="${_cxxflags[*]}" \
-  VERBOSE=1 \
   cmake \
     -B \
       "${srcdir}/${_tarname}/build/" \
     "${_cmake_opts[@]}"
+  # VERBOSE=1 \
   CC="${_cc}" \
   CXX="${_cxx}" \
   CXXFLAGS="${_cxxflags[*]}" \
-  VERBOSE=1 \
   cmake \
     --build \
       "${srcdir}/${_tarname}/build/" # \
