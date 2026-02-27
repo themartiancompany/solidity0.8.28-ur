@@ -694,108 +694,108 @@ prepare() {
       "${_commit_hash}" > \
       "${srcdir}/${_tarname}/commit_hash.txt"
   fi
-  sed \
-    -e \
-      "/-Wsign-conversion/d" \
-    -i \
-    "${srcdir}/${_tarname}/cmake/EthCompilerSettings.cmake"
-  _cmake_version="$(
-    ( cmake \
-        --version |
-        head \
-          -n \
-            1 |
-          awk \
-            '{print $3}' ) ||
-    true)"
-  if [[ "${_cmake_version}" == "4."* ]]; then
-    _msg=(
-      "CMake version 4.x detected,"
-      "applying patch for JSON"
-      "preprocessor dependency."
-    )
-    echo \
-      "${_msg[*]}"
-  elif [[ "${_cmake_version}" == "" ]]; then
-    _msg=(
-      "No CMake version detected, assuming"
-      ">=4."
-    )
-    echo \
-      "${_msg[*]}"
-  fi
-  _fmtlib_available="$(
-    find \
-      "${srcdir}/${_tarname}/deps/fmtlib" \
-      -mindepth \
-        1 \
-      -maxdepth \
-        1 \
-      -type \
-        "f" || \
-    true)"
-  if [[ "${_fmtlib_available}" == "" ]]; then
-    if [[ "${_git}" == "true" ]]; then
-      git \
-        -C \
-          "${srcdir}/${_tarname}" \
-        submodule \
-          update \
-          --init \
-          "deps/fmtlib"
-    elif [[ "${_git}" == "false" ]]; then
-      if [[ "${_evmfs}" == "false" ]]; then
-        if [[ "${_git_http}" == "github" ]]; then
-          _github_tarball_submodule_get \
-            "fmt" \
-            "${_fmtlib_url}" \
-            "${_fmtlib_commit}" \
-            "deps/fmtlib"
-          _github_tarball_submodule_get \
-            "json" \
-            "${_json_url}" \
-            "${_json_commit}" \
-            "deps/nlohmann-json"
-          _github_tarball_submodule_get \
-            "range-v3" \
-            "${_range_v3_url}" \
-            "${_range_v3_commit}" \
-            "deps/range-v3"
-	  if [[ "${_debug}" == "true" ]]; then
-	    tree \
-              "${srcdir}/${_tarname}/deps"
-	  fi
-          rm \
-            "${srcdir}/${_tarname}/.gitmodules"
-        elif [[ "${_git_http}" == "gitlab" ]]; then
-          _msg=(
-            "You can take an extra effort"
-            "if you want to retrieve"
-            "the sources from Gitlab"
-            "this time. Still it builds"
-            "normally."
-          )
-          echo \
-            "${_msg[*]}"
-          exit \
-            1
-          tar \
-            xf \
-            "${srcdir}/${_tarfile}"
-        fi
-      elif [[ "${_evmfs}" == "true" ]]; then
-        _msg=(
-          "I may have already made"
-          "whole 'fmt' sources undeletable but then"
-          "I have packaged only 'fmt8' I'm not"
-          "sure, still it seemed quite excessive"
-          "bringing down 'fmt8' today."
-        )
-        echo \
-          "${_msg[*]}"
-      fi
-    fi
-  fi
+  # sed \
+  #   -e \
+  #     "/-Wsign-conversion/d" \
+  #   -i \
+  #   "${srcdir}/${_tarname}/cmake/EthCompilerSettings.cmake"
+  # _cmake_version="$(
+  #   ( cmake \
+  #       --version |
+  #       head \
+  #         -n \
+  #           1 |
+  #         awk \
+  #           '{print $3}' ) ||
+  #   true)"
+  # if [[ "${_cmake_version}" == "4."* ]]; then
+  #   _msg=(
+  #     "CMake version 4.x detected,"
+  #     "applying patch for JSON"
+  #     "preprocessor dependency."
+  #   )
+  #   echo \
+  #     "${_msg[*]}"
+  # elif [[ "${_cmake_version}" == "" ]]; then
+  #   _msg=(
+  #     "No CMake version detected, assuming"
+  #     ">=4."
+  #   )
+  #   echo \
+  #     "${_msg[*]}"
+  # fi
+  # _fmtlib_available="$(
+  #   find \
+  #     "${srcdir}/${_tarname}/deps/fmtlib" \
+  #     -mindepth \
+  #       1 \
+  #     -maxdepth \
+  #       1 \
+  #     -type \
+  #       "f" || \
+  #   true)"
+  # if [[ "${_fmtlib_available}" == "" ]]; then
+  #   if [[ "${_git}" == "true" ]]; then
+  #     git \
+  #       -C \
+  #         "${srcdir}/${_tarname}" \
+  #       submodule \
+  #         update \
+  #         --init \
+  #         "deps/fmtlib"
+  #   elif [[ "${_git}" == "false" ]]; then
+  #     if [[ "${_evmfs}" == "false" ]]; then
+  #       if [[ "${_git_http}" == "github" ]]; then
+  #         _github_tarball_submodule_get \
+  #           "fmt" \
+  #           "${_fmtlib_url}" \
+  #           "${_fmtlib_commit}" \
+  #           "deps/fmtlib"
+  #         _github_tarball_submodule_get \
+  #           "json" \
+  #           "${_json_url}" \
+  #           "${_json_commit}" \
+  #           "deps/nlohmann-json"
+  #         _github_tarball_submodule_get \
+  #           "range-v3" \
+  #           "${_range_v3_url}" \
+  #           "${_range_v3_commit}" \
+  #           "deps/range-v3"
+  #         if [[ "${_debug}" == "true" ]]; then
+  #           tree \
+  #             "${srcdir}/${_tarname}/deps"
+  #         fi
+  #         rm \
+  #           "${srcdir}/${_tarname}/.gitmodules"
+  #       elif [[ "${_git_http}" == "gitlab" ]]; then
+  #         _msg=(
+  #           "You can take an extra effort"
+  #           "if you want to retrieve"
+  #           "the sources from Gitlab"
+  #           "this time. Still it builds"
+  #           "normally."
+  #         )
+  #         echo \
+  #           "${_msg[*]}"
+  #         exit \
+  #           1
+  #         tar \
+  #           xf \
+  #           "${srcdir}/${_tarfile}"
+  #       fi
+  #     elif [[ "${_evmfs}" == "true" ]]; then
+  #       _msg=(
+  #         "I may have already made"
+  #         "whole 'fmt' sources undeletable but then"
+  #         "I have packaged only 'fmt8' I'm not"
+  #         "sure, still it seemed quite excessive"
+  #         "bringing down 'fmt8' today."
+  #       )
+  #       echo \
+  #         "${_msg[*]}"
+  #     fi
+  #   fi
+  # fi
 }
 
 _bin_get() {
@@ -876,11 +876,11 @@ _compile() {
   )
   echo \
     "${_msg[*]}"
-  if [[ "${_cmake_version}" == "4."* ]]; then
-    _cmake_opts+=(
-      -D CMAKE_POLICY_VERSION_MINIMUM=3.5
-    )
-  fi
+  # if [[ "${_cmake_version}" == "4."* ]]; then
+  #   _cmake_opts+=(
+  #     -D CMAKE_POLICY_VERSION_MINIMUM=3.5
+  #   )
+  # fi
   if [[ "${_static}" == "true" ]]; then
     _cmake_static_opt="ON"
   elif [[ "${_static}" == "false" ]]; then
