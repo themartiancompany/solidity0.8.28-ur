@@ -228,7 +228,7 @@ fi
 _fmt_majver="${_fmt_pkgver%%.*}"
 _fmt_11="$(
   ( _verlt \
-      "${_boost_majver}" \
+      "${_fmt_majver}" \
       "12" && \
       echo \
         "true" ) || \
