@@ -133,6 +133,51 @@ _boost_pkgver_get() {
   done
 }
 
+_fmt_pkgver_get() {
+  local \
+    _modes=() \
+    _pkgs=() \
+    _cut_opts=()
+  _modes+=(
+    "Q"
+    "S"
+  )
+  _pkgs+=(
+    "fmt"
+  )
+  _cut_opts=(
+    -d
+      "-"
+    -f
+      "1"
+    --complement
+  )
+  for _pkg in "${_pkgs[@]}"; do
+    for _mode in "${_modes[@]}"; do
+      _fmt_pkgver="$(
+        ( pacman \
+            -"${_mode}"i \
+            "${_pkg}" \
+            2>"/dev/null" || \
+          true ) |
+          grep \
+            "Version" |
+            awk \
+              '{print $3}' |
+              rev |
+                cut \
+                  "${_cut_opts[@]}" |
+              rev || \
+        echo \
+          "null")"
+      if [[ "${_fmt_pkgver}" != "" && \
+            "${_fmt_pkgver}" != "null" ]]; then
+        break
+      fi
+    done
+  done
+}
+
 _verlte() {
   printf \
     '%s\n' \
@@ -177,6 +222,18 @@ if [[ "${_boost_16}" == "false" && \
 else
   _boost_latest="false"
 fi
+if [[ ! -v "_fmt_pkgver" ]]; then
+  _fmt_pkgver_get
+fi
+_fmt_majver="${_fmt_pkgver%%.*}"
+_fmt_11="$(
+  ( _verlt \
+      "${_boost_majver}" \
+      "12" && \
+      echo \
+        "true" ) || \
+    echo \
+      "false")"
 # In late 2025 or 2026, according
 # to Github, Solidity publishing
 # namespace seems to have been moved
@@ -342,9 +399,14 @@ if [[ "${_os}" == "Android" ]]; then
 elif [[ "${_os}" == "GNU/Linux" ]]; then
   _boost_pkgname="boost-libs"
 fi
+if [[ "${_fmt_11}" == "true" ]]; then
+  _fmt="fmt<12"
+else
+  _fmt="fmt11"
+fi
 depends=(
   "${_boost_pkgname}"
-  "fmt11"
+  "${_fmt}"
   "nlohmann-json"
   "range-v3"
 )
@@ -363,7 +425,7 @@ makedepends=(
   "${_cmake_makedepends[@]}"
   "${_compiler}"
   "${_cmake_generator}"
-  "fmt11"
+  "${_fmt}"
   "nlohmann-json"
   "pkgconf"
   "range-v3"
