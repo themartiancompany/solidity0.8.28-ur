@@ -162,14 +162,14 @@ build:
   parallel:
     matrix:
       - BUILD_SCRIPT_ARGS: arch x86_64 ${CI_PROJECT_NAMESPACE} ${CI_PROJECT_NAME} ${CI_PROJECT_ID} ${CI_COMMIT_SHA} ${CI_COMMIT_TAG} ${CI_JOB_TOKEN} ${PACKAGE_REGISTRY_URL}
-  only:
-    refs:
-      - master
-      - merge_requests
-    changes:
-      - PKGBUILD
-      - .gitlab-ci.yml
-      - .gitlab/ci/*
+  # only:
+  #   refs:
+  #     - master
+  #     - merge_requests
+  #   changes:
+  #     - PKGBUILD
+  #     - .gitlab-ci.yml
+  #     - .gitlab/ci/*
   interruptible: true
 
 .release:
