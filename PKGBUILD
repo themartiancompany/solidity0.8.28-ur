@@ -289,7 +289,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=43
+pkgrel=44
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -365,6 +365,7 @@ makedepends=(
   "${_cmake_generator}"
   "fmt"
   "nlohmann-json"
+  "pkg-conf"
   "range-v3"
 )
 if [[ "${_debug}" == "true" ]]; then
@@ -933,7 +934,7 @@ _compile() {
     # -D
     #  Boost_USE_STATIC_LIBS="${_cmake_static_opt}"
     -D
-      IGNORE_VENDORED_DEPENDENCIES="OFF"
+      IGNORE_VENDORED_DEPENDENCIES="ON"
     -D
      USE_SYSTEM_LIBRARIES="ON"
     # -D
