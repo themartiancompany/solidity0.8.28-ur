@@ -201,8 +201,8 @@ if [[ ! -v "_debug" ]]; then
   _debug="true"
 fi
 if [[ ! -v "_git" ]]; then
-  _git="true" # "${_evmfs}"
-  # _git="${_evmfs}"
+  # _git="true"
+  _git="${_evmfs}"
 fi
 if [[ ! -v "_git_service" ]]; then
   if [[ "${_boost_16}" == "true" ]]; then
@@ -654,7 +654,7 @@ _git_unbundle_update() {
       remote \
         add \
           "${_bundle_name}" \
-	  "${_bundle}" ||
+          "${_bundle}" ||
   true
   git \
     -C \
@@ -836,18 +836,18 @@ _compile() {
   _cxxflags=(
     "${CXXFLAGS}"
     -Wno-unused-but-set-variable
-    -Wno-unknown-warning-option
+    # -Wno-unknown-warning-option
     -Wno-deprecated-declarations
-    -Wno-dangling-reference
-    -Wno-overloaded-virtual
-    -Wno-range-loop-construct
-    -Wno-sign-conversion
-    -Wno-aggressive-loop-optimizations
+    # -Wno-dangling-reference
+    # -Wno-overloaded-virtual
+    # -Wno-range-loop-construct
+    # -Wno-sign-conversion
+    # -Wno-aggressive-loop-optimizations
   )
   if [[ "${_os}" == "Android" ]]; then
     _cxxflags+=(
-      -Wno-unqualified-std-cast-call
-      -Wno-dangling-field
+      # -Wno-unqualified-std-cast-call
+      # -Wno-dangling-field
     )
   elif [[ "${_os}" == "GNU/Linux" ]]; then
     _cxxflags+=(
@@ -928,16 +928,16 @@ _compile() {
       STRICT_Z3_VERSION="OFF"
     -D
       TESTS="${_tests}"
+    -D
+      USE_LD_GOLD="OFF"
     # -D
-    #   USE_LD_GOLD="OFF"
+    #  Boost_USE_STATIC_LIBS="${_cmake_static_opt}"
     -D
-      Boost_USE_STATIC_LIBS="${_cmake_static_opt}"
-    -D
-      IGNORE_VENDORED_DEPENDENCIES="${_vendored_deps}"
+      IGNORE_VENDORED_DEPENDENCIES="ON"
     # -D
-    #   USE_SYSTEM_LIBRARIES="ON"
-    -D
-      CMAKE_CXX_FLAGS="${_cxxflags[*]}"
+    #  USE_SYSTEM_LIBRARIES="ON"
+    # -D
+    #   CMAKE_CXX_FLAGS="${_cxxflags[*]}"
     -S
       "${srcdir}/${_tarname}/"
     -Wno-dev
@@ -958,16 +958,16 @@ _compile() {
   cmake \
     -B \
       "${srcdir}/${_tarname}/build/" \
-    "${_cmake_opts[@]}" || \
-  true
+    "${_cmake_opts[@]}"
   # VERBOSE=1 \
   CC="${_cc}" \
   CXX="${_cxx}" \
   CXXFLAGS="${_cxxflags[*]}" \
   cmake \
     --build \
-      "${srcdir}/${_tarname}/build/" || \
-  true
+      "${srcdir}/${_tarname}/build/"
+  echo \
+    "Done."
 }
 
 build() {
@@ -981,10 +981,8 @@ build() {
   for _tests_switch_status \
     in "${_tests_switch[@]}"; do
     _compile \
-      "${_tests_switch_status}" || \
-    true
-  done || \
-    true
+      "${_tests_switch_status}"
+  done
 }
 
 check() {
