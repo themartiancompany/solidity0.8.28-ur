@@ -10,7 +10,7 @@
 [comment]: <> (General Public License as published by the Free)
 [comment]: <> (Software Foundation, either version 3 of the License.)
 
-[comment]: <> (This program is distributed in the hope that it will
+[comment]: <> (This program is distributed in the hope that it will)
 [comment]: <> (be useful, but WITHOUT ANY WARRANTY; without even)
 [comment]: <> (the implied warranty of MERCHANTABILITY or FITNESS)
 [comment]: <> (FOR A PARTICULAR PURPOSE. See the GNU Affero General)

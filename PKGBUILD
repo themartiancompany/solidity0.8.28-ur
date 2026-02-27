@@ -344,7 +344,7 @@ elif [[ "${_os}" == "GNU/Linux" ]]; then
 fi
 depends=(
   "${_boost_pkgname}"
-  "fmt"
+  "fmt11"
   "nlohmann-json"
   "range-v3"
 )
@@ -363,7 +363,7 @@ makedepends=(
   "${_cmake_makedepends[@]}"
   "${_compiler}"
   "${_cmake_generator}"
-  "fmt"
+  "fmt11"
   "nlohmann-json"
   "pkgconf"
   "range-v3"
