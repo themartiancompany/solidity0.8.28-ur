@@ -289,7 +289,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=42
+pkgrel=43
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -724,78 +724,78 @@ prepare() {
   #   echo \
   #     "${_msg[*]}"
   # fi
-  # _fmtlib_available="$(
-  #   find \
-  #     "${srcdir}/${_tarname}/deps/fmtlib" \
-  #     -mindepth \
-  #       1 \
-  #     -maxdepth \
-  #       1 \
-  #     -type \
-  #       "f" || \
-  #   true)"
-  # if [[ "${_fmtlib_available}" == "" ]]; then
-  #   if [[ "${_git}" == "true" ]]; then
-  #     git \
-  #       -C \
-  #         "${srcdir}/${_tarname}" \
-  #       submodule \
-  #         update \
-  #         --init \
-  #         "deps/fmtlib"
-  #   elif [[ "${_git}" == "false" ]]; then
-  #     if [[ "${_evmfs}" == "false" ]]; then
-  #       if [[ "${_git_http}" == "github" ]]; then
-  #         _github_tarball_submodule_get \
-  #           "fmt" \
-  #           "${_fmtlib_url}" \
-  #           "${_fmtlib_commit}" \
-  #           "deps/fmtlib"
-  #         _github_tarball_submodule_get \
-  #           "json" \
-  #           "${_json_url}" \
-  #           "${_json_commit}" \
-  #           "deps/nlohmann-json"
-  #         _github_tarball_submodule_get \
-  #           "range-v3" \
-  #           "${_range_v3_url}" \
-  #           "${_range_v3_commit}" \
-  #           "deps/range-v3"
-  #         if [[ "${_debug}" == "true" ]]; then
-  #           tree \
-  #             "${srcdir}/${_tarname}/deps"
-  #         fi
-  #         rm \
-  #           "${srcdir}/${_tarname}/.gitmodules"
-  #       elif [[ "${_git_http}" == "gitlab" ]]; then
-  #         _msg=(
-  #           "You can take an extra effort"
-  #           "if you want to retrieve"
-  #           "the sources from Gitlab"
-  #           "this time. Still it builds"
-  #           "normally."
-  #         )
-  #         echo \
-  #           "${_msg[*]}"
-  #         exit \
-  #           1
-  #         tar \
-  #           xf \
-  #           "${srcdir}/${_tarfile}"
-  #       fi
-  #     elif [[ "${_evmfs}" == "true" ]]; then
-  #       _msg=(
-  #         "I may have already made"
-  #         "whole 'fmt' sources undeletable but then"
-  #         "I have packaged only 'fmt8' I'm not"
-  #         "sure, still it seemed quite excessive"
-  #         "bringing down 'fmt8' today."
-  #       )
-  #       echo \
-  #         "${_msg[*]}"
-  #     fi
-  #   fi
-  # fi
+  _fmtlib_available="$(
+    find \
+      "${srcdir}/${_tarname}/deps/fmtlib" \
+      -mindepth \
+        1 \
+      -maxdepth \
+        1 \
+      -type \
+        "f" || \
+    true)"
+  if [[ "${_fmtlib_available}" == "" ]]; then
+    if [[ "${_git}" == "true" ]]; then
+      git \
+        -C \
+          "${srcdir}/${_tarname}" \
+        submodule \
+          update \
+          --init \
+          "deps/fmtlib"
+    elif [[ "${_git}" == "false" ]]; then
+      if [[ "${_evmfs}" == "false" ]]; then
+        if [[ "${_git_http}" == "github" ]]; then
+          _github_tarball_submodule_get \
+            "fmt" \
+            "${_fmtlib_url}" \
+            "${_fmtlib_commit}" \
+            "deps/fmtlib"
+          _github_tarball_submodule_get \
+            "json" \
+            "${_json_url}" \
+            "${_json_commit}" \
+            "deps/nlohmann-json"
+          _github_tarball_submodule_get \
+            "range-v3" \
+            "${_range_v3_url}" \
+            "${_range_v3_commit}" \
+            "deps/range-v3"
+          if [[ "${_debug}" == "true" ]]; then
+            tree \
+              "${srcdir}/${_tarname}/deps"
+          fi
+          rm \
+            "${srcdir}/${_tarname}/.gitmodules"
+        elif [[ "${_git_http}" == "gitlab" ]]; then
+          _msg=(
+            "You can take an extra effort"
+            "if you want to retrieve"
+            "the sources from Gitlab"
+            "this time. Still it builds"
+            "normally."
+          )
+          echo \
+            "${_msg[*]}"
+          exit \
+            1
+          tar \
+            xf \
+            "${srcdir}/${_tarfile}"
+        fi
+      elif [[ "${_evmfs}" == "true" ]]; then
+        _msg=(
+          "I may have already made"
+          "whole 'fmt' sources undeletable but then"
+          "I have packaged only 'fmt8' I'm not"
+          "sure, still it seemed quite excessive"
+          "bringing down 'fmt8' today."
+        )
+        echo \
+          "${_msg[*]}"
+      fi
+    fi
+  fi
 }
 
 _bin_get() {
@@ -933,9 +933,9 @@ _compile() {
     # -D
     #  Boost_USE_STATIC_LIBS="${_cmake_static_opt}"
     -D
-      IGNORE_VENDORED_DEPENDENCIES="ON"
-    # -D
-    #  USE_SYSTEM_LIBRARIES="ON"
+      IGNORE_VENDORED_DEPENDENCIES="OFF"
+    -D
+     USE_SYSTEM_LIBRARIES="ON"
     # -D
     #   CMAKE_CXX_FLAGS="${_cxxflags[*]}"
     -S
