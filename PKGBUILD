@@ -365,7 +365,7 @@ makedepends=(
   "${_cmake_generator}"
   "fmt"
   "nlohmann-json"
-  "pkg-conf"
+  "pkgconf"
   "range-v3"
 )
 if [[ "${_debug}" == "true" ]]; then
