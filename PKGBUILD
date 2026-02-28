@@ -1013,7 +1013,7 @@ _compile() {
     -D
      USE_SYSTEM_LIBRARIES="ON"
     -D
-      CMAKE_CXX_FLAGS="${_cxxflags[*]}"
+      CMAKE_CXX_FLAGS=\"${_cxxflags[*]}\"
     # -D
     #   CMAKE_LD_FLAGS="${_cxxflags[*]}"
     -S
