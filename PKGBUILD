@@ -907,9 +907,12 @@ _compile() {
     ${LDFLAGS}
     "${_libfmt}"
   )
+  _cppflags=(
+    ${CPPFLAGS}
+    -I"/usr/include/fmt11"
+  )
   _cxxflags=(
     "${CXXFLAGS}"
-    -I"/usr/include/fmt11"
     -Wl,"${_libfmt}"
     -Wno-unused-but-set-variable
     # -Wno-unknown-warning-option
@@ -1012,8 +1015,8 @@ _compile() {
       IGNORE_VENDORED_DEPENDENCIES="ON"
     -D
       USE_SYSTEM_LIBRARIES="ON"
-    -D
-      CMAKE_CXX_FLAGS=\"${_cxxflags[*]}\"
+    # -D
+    #   CMAKE_CXX_FLAGS=\"${_cxxflags[*]}\"
     # -D
     #   CMAKE_LD_FLAGS="${_cxxflags[*]}"
     -S
@@ -1023,15 +1026,23 @@ _compile() {
   _flags+=(
     CC="${_cc}"
     CXX="${_cxx}"
+    CPPFLAGS="${_cppflags[*]}"
     CXXFLAGS="${_cxxflags[*]}"
     LDFLAGS="${_ldflags[*]}"
   )
   export \
     CC="${_cc}" \
     CXX="${_cxx}" \
+    CPPFLAGS="${_cppflags[*]}" \
     CXXFLAGS="${_cxxflags[*]}" \
     LDFLAGS="${_ldflags[*]}"
   # VERBOSE=1 \
+  _msg=(
+    "cppflags:"
+      "${_cppflags[*]}"
+  )
+  echo \
+    "${_msg[*]}"
   _msg=(
     "cxxflags:"
       "${_cxxflags[*]}"
@@ -1052,6 +1063,7 @@ _compile() {
     "${_msg[*]}"
   CC="${_cc}" \
   CXX="${_cxx}" \
+  CPPFLAGS="${_cppflags[*]}" \
   CXXFLAGS="${_cxxflags[*]}" \
   LDFLAGS="${_ldflags[*]}" \
   cmake \
@@ -1062,6 +1074,7 @@ _compile() {
   CC="${_cc}" \
   CXX="${_cxx}" \
   CXXFLAGS="${_cxxflags[*]}" \
+  CPPFLAGS="${_cppflags[*]}" \
   LDFLAGS="${_ldflags[*]}" \
   cmake \
     --build \
