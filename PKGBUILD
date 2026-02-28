@@ -899,7 +899,9 @@ _compile() {
     _cmake_static_opt \
     _libfmt \
     _pkg_config_path \
-    _libfmt_pkg_config
+    _libfmt_pkg_config \
+    _cmake_module_path
+  _cmake_module_path="$(_usr_get)/lib/cmake/fmt11;"
   _libfmt="$(_usr_get)/lib/libfmt.so.11"
   _libfmt_pkg_config="$(_usr_get)/lib/fmt11/pkgconfig"
   _pkg_config_path="$(_usr_get)/lib/pkgconfig:${_libfmt_pkg_config}"
