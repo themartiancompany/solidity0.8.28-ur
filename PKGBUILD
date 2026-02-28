@@ -346,7 +346,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=64
+pkgrel=65
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -900,16 +900,16 @@ _compile() {
     _libfmt \
     _pkg_config_path \
     _libfmt_pkg_config
-  _libfmt="$(_usr_get)/lib/libfmt.so.11"
+  _libfmt="$(_usr_get)/lib/fmt11/libfmt.so"
   _libfmt_pkg_config="$(_usr_get)/lib/fmt11/pkgconfig"
-  _pkg_config_path="${PKG_CONFIG_PATH}:${_libfmt_pkg_config}"
+  _pkg_config_path="$(_usr_get)/lib/pkgconfig:${_libfmt_pkg_config}"
   _cc="$(
     command \
       -v \
       "${_compiler}")"
   _ldflags+=(
     ${LDFLAGS}
-    "${_libfmt}"
+    -Wl,"${_libfmt}"
   )
   _cppflags=(
     ${CPPFLAGS}
@@ -1077,6 +1077,7 @@ _compile() {
   CPPFLAGS="${_cppflags[*]}" \
   CXXFLAGS="${_cxxflags[*]}" \
   LDFLAGS="${_ldflags[*]}" \
+  PKG_CONFIG_PATH="${_pkg_config_path}" \
   cmake \
     -B \
       "${srcdir}/${_tarname}/build/" \
@@ -1087,6 +1088,7 @@ _compile() {
   CXXFLAGS="${_cxxflags[*]}" \
   CPPFLAGS="${_cppflags[*]}" \
   LDFLAGS="${_ldflags[*]}" \
+  PKG_CONFIG_PATH="${_pkg_config_path}" \
   cmake \
     --build \
       "${srcdir}/${_tarname}/build/"
