@@ -891,13 +891,19 @@ _compile() {
     _cxx_compiler \
     _cxxflags=() \
     _flags=() \
+    _ldflags=() \
     _cmake_static_opt
   _cc="$(
     command \
       -v \
       "${_compiler}")"
+  _ldflags+=(
+    ${LDFLAGS}
+    "/usr/lib/libfmt.so.11"
+  )
   _cxxflags=(
     "${CXXFLAGS}"
+    -I"/usr/include/fmt11"
     -Wno-unused-but-set-variable
     # -Wno-unknown-warning-option
     -Wno-deprecated-declarations
@@ -1009,15 +1015,18 @@ _compile() {
     CC="${_cc}"
     CXX="${_cxx}"
     CXXFLAGS="${_cxxflags[*]}"
+    LDFLAGS="${_ldflags[*]}"
   )
   export \
     CC="${_cc}" \
     CXX="${_cxx}" \
-    CXXFLAGS="${_cxxflags[*]}"
+    CXXFLAGS="${_cxxflags[*]}" \
+    LDFLAGS="${_ldflags[*]}"
   # VERBOSE=1 \
   CC="${_cc}" \
   CXX="${_cxx}" \
   CXXFLAGS="${_cxxflags[*]}" \
+  LDFLAGS="${_ldflags[*]}" \
   cmake \
     -B \
       "${srcdir}/${_tarname}/build/" \
@@ -1026,6 +1035,7 @@ _compile() {
   CC="${_cc}" \
   CXX="${_cxx}" \
   CXXFLAGS="${_cxxflags[*]}" \
+  LDFLAGS="${_ldflags[*]}" \
   cmake \
     --build \
       "${srcdir}/${_tarname}/build/"
