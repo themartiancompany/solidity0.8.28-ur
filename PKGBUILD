@@ -346,7 +346,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=58
+pkgrel=59
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -861,10 +861,11 @@ prepare() {
   fi
 }
 
-_bin_get() {
+_usr_get() {
   local \
+    _bin \
     _cc \
-    _bin
+    _usr
   _cc="$(
     command \
       -v \
@@ -877,8 +878,11 @@ _bin_get() {
   _bin="$(
     dirname \
       "${_cc}")"
+  _usr="$(
+    dirname \
+      "${_bin}")"
   echo \
-    "${_bin}"
+    "${_usr}"
 }
 
 _compile() {
@@ -892,18 +896,21 @@ _compile() {
     _cxxflags=() \
     _flags=() \
     _ldflags=() \
-    _cmake_static_opt
+    _cmake_static_opt \
+    _libfmt
+  _libfmt="$(_usr_get)/lib/libfmt.so.11"
   _cc="$(
     command \
       -v \
       "${_compiler}")"
   _ldflags+=(
     ${LDFLAGS}
-    "/usr/lib/libfmt.so.11"
+    "${_libfmt}"
   )
   _cxxflags=(
     "${CXXFLAGS}"
     -I"/usr/include/fmt11"
+    -Wl,"${_libfmt}"
     -Wno-unused-but-set-variable
     # -Wno-unknown-warning-option
     -Wno-deprecated-declarations
@@ -1005,8 +1012,10 @@ _compile() {
       IGNORE_VENDORED_DEPENDENCIES="ON"
     -D
      USE_SYSTEM_LIBRARIES="ON"
+    -D
+      CMAKE_CXX_FLAGS="${_cxxflags[*]}"
     # -D
-    #   CMAKE_CXX_FLAGS="${_cxxflags[*]}"
+    #   CMAKE_LD_FLAGS="${_cxxflags[*]}"
     -S
       "${srcdir}/${_tarname}/"
     -Wno-dev
@@ -1031,6 +1040,10 @@ _compile() {
     -B \
       "${srcdir}/${_tarname}/build/" \
     "${_cmake_opts[@]}"
+  echo \
+    "cxxflags: ${_cxxflags[*]}"
+  echo \
+    "ldflags: ${_ldflags[*]}"
   # VERBOSE=1 \
   CC="${_cc}" \
   CXX="${_cxx}" \
