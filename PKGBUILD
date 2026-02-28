@@ -346,7 +346,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=66
+pkgrel=67
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -1042,7 +1042,8 @@ _compile() {
     CPPFLAGS="${_cppflags[*]}" \
     CXXFLAGS="${_cxxflags[*]}" \
     LDFLAGS="${_ldflags[*]}" \
-    PKG_CONFIG_PATH="${_pkg_config_path}"
+    PKG_CONFIG_PATH="${_pkg_config_path}" \
+    CMAKE_MODULE_PATH="${_cmake_module_path}"
   # VERBOSE=1 \
   _msg=(
     "cppflags:"
