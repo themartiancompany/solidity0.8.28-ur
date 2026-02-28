@@ -346,7 +346,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=61
+pkgrel=62
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -1011,7 +1011,7 @@ _compile() {
     -D
       IGNORE_VENDORED_DEPENDENCIES="ON"
     -D
-     USE_SYSTEM_LIBRARIES="ON"
+      USE_SYSTEM_LIBRARIES="ON"
     -D
       CMAKE_CXX_FLAGS=\"${_cxxflags[*]}\"
     # -D
