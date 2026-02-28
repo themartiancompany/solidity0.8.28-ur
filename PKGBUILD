@@ -346,7 +346,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=59
+pkgrel=60
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -1040,10 +1040,18 @@ _compile() {
     -B \
       "${srcdir}/${_tarname}/build/" \
     "${_cmake_opts[@]}"
+  _msg=(
+    "cxxflags:"
+      "${_cxxflags[*]}"
+  )
   echo \
-    "cxxflags: ${_cxxflags[*]}"
+    "${_msg[*]}"
+  _msg=(
+    "ldflags:"
+      "${_ldflags[*]}"
+  )
   echo \
-    "ldflags: ${_ldflags[*]}"
+    "${_msg[*]}"
   # VERBOSE=1 \
   CC="${_cc}" \
   CXX="${_cxx}" \
