@@ -346,7 +346,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=63
+pkgrel=64
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -897,8 +897,12 @@ _compile() {
     _flags=() \
     _ldflags=() \
     _cmake_static_opt \
-    _libfmt
+    _libfmt \
+    _pkg_config_path \
+    _libfmt_pkg_config
   _libfmt="$(_usr_get)/lib/libfmt.so.11"
+  _libfmt_pkg_config="$(_usr_get)/lib/fmt11/pkgconfig"
+  _pkg_config_path="${PKG_CONFIG_PATH}:${_libfmt_pkg_config}"
   _cc="$(
     command \
       -v \
@@ -944,7 +948,7 @@ _compile() {
       "${_cxx_compiler}")"
   _cmake_version="$(
     cmake \
-      --version | \
+      --version |
       head \
         -n \
           1 |
@@ -1035,7 +1039,8 @@ _compile() {
     CXX="${_cxx}" \
     CPPFLAGS="${_cppflags[*]}" \
     CXXFLAGS="${_cxxflags[*]}" \
-    LDFLAGS="${_ldflags[*]}"
+    LDFLAGS="${_ldflags[*]}" \
+    PKG_CONFIG_PATH="${_pkg_config_path}"
   # VERBOSE=1 \
   _msg=(
     "cppflags:"
@@ -1052,6 +1057,12 @@ _compile() {
   _msg=(
     "ldflags:"
       "${_ldflags[*]}"
+  )
+  echo \
+    "${_msg[*]}"
+  _msg=(
+    "pkg config path:"
+      "${_pkg_config_path}"
   )
   echo \
     "${_msg[*]}"
