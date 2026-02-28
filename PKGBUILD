@@ -900,7 +900,7 @@ _compile() {
     _libfmt \
     _pkg_config_path \
     _libfmt_pkg_config
-  _libfmt="$(_usr_get)/lib/fmt11/libfmt.so"
+  _libfmt="$(_usr_get)/lib/libfmt.so.11"
   _libfmt_pkg_config="$(_usr_get)/lib/fmt11/pkgconfig"
   _pkg_config_path="$(_usr_get)/lib/pkgconfig:${_libfmt_pkg_config}"
   _cc="$(
