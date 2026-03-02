@@ -133,50 +133,50 @@ _boost_pkgver_get() {
   done
 }
 
-_fmt_pkgver_get() {
-  local \
-    _modes=() \
-    _pkgs=() \
-    _cut_opts=()
-  _modes+=(
-    "Q"
-    "S"
-  )
-  _pkgs+=(
-    "fmt"
-  )
-  _cut_opts=(
-    -d
-      "-"
-    -f
-      "1"
-    --complement
-  )
-  for _pkg in "${_pkgs[@]}"; do
-    for _mode in "${_modes[@]}"; do
-      _fmt_pkgver="$(
-        ( pacman \
-            -"${_mode}"i \
-            "${_pkg}" \
-            2>"/dev/null" || \
-          true ) |
-          grep \
-            "Version" |
-            awk \
-              '{print $3}' |
-              rev |
-                cut \
-                  "${_cut_opts[@]}" |
-              rev || \
-        echo \
-          "null")"
-      if [[ "${_fmt_pkgver}" != "" && \
-            "${_fmt_pkgver}" != "null" ]]; then
-        break
-      fi
-    done
-  done
-}
+# _fmt_pkgver_get() {
+#   local \
+#     _modes=() \
+#     _pkgs=() \
+#     _cut_opts=()
+#   _modes+=(
+#     "Q"
+#     "S"
+#   )
+#   _pkgs+=(
+#     "fmt"
+#   )
+#   _cut_opts=(
+#     -d
+#       "-"
+#     -f
+#       "1"
+#     --complement
+#   )
+#   for _pkg in "${_pkgs[@]}"; do
+#     for _mode in "${_modes[@]}"; do
+#       _fmt_pkgver="$(
+#         ( pacman \
+#             -"${_mode}"i \
+#             "${_pkg}" \
+#             2>"/dev/null" || \
+#           true ) |
+#           grep \
+#             "Version" |
+#             awk \
+#               '{print $3}' |
+#               rev |
+#                 cut \
+#                   "${_cut_opts[@]}" |
+#               rev || \
+#         echo \
+#           "null")"
+#       if [[ "${_fmt_pkgver}" != "" && \
+#             "${_fmt_pkgver}" != "null" ]]; then
+#         break
+#       fi
+#     done
+#   done
+# }
 
 _verlte() {
   printf \
@@ -222,18 +222,18 @@ if [[ "${_boost_16}" == "false" && \
 else
   _boost_latest="false"
 fi
-if [[ ! -v "_fmt_pkgver" ]]; then
-  _fmt_pkgver_get
-fi
-_fmt_majver="${_fmt_pkgver%%.*}"
-_fmt_11="$(
-  ( _verlt \
-      "${_fmt_majver}" \
-      "12" && \
-      echo \
-        "true" ) || \
-    echo \
-      "false")"
+# if [[ ! -v "_fmt_pkgver" ]]; then
+#   _fmt_pkgver_get
+# fi
+# _fmt_majver="${_fmt_pkgver%%.*}"
+# _fmt_11="$(
+#   ( _verlt \
+#       "${_fmt_majver}" \
+#       "12" && \
+#       echo \
+#         "true" ) || \
+#     echo \
+#       "false")"
 # In late 2025 or 2026, according
 # to Github, Solidity publishing
 # namespace seems to have been moved
@@ -400,14 +400,15 @@ if [[ "${_os}" == "Android" ]]; then
 elif [[ "${_os}" == "GNU/Linux" ]]; then
   _boost_pkgname="boost-libs"
 fi
-if [[ "${_fmt_11}" == "true" ]]; then
-  _fmt="fmt<12"
-else
-  _fmt="fmt11"
-fi
+# if [[ "${_fmt_11}" == "true" ]]; then
+#   _fmt="fmt<12"
+# else
+#   _fmt="fmt11"
+# fi
 depends=(
   "${_boost_pkgname}"
-  "${_fmt}"
+  # "${_fmt}"
+  "fmt"
   "nlohmann-json"
   "range-v3"
 )
@@ -799,78 +800,78 @@ prepare() {
   #   echo \
   #     "${_msg[*]}"
   # fi
-  _fmtlib_available="$(
-    find \
-      "${srcdir}/${_tarname}/deps/fmtlib" \
-      -mindepth \
-        1 \
-      -maxdepth \
-        1 \
-      -type \
-        "f" || \
-    true)"
-  if [[ "${_fmtlib_available}" == "" ]]; then
-    if [[ "${_git}" == "true" ]]; then
-      git \
-        -C \
-          "${srcdir}/${_tarname}" \
-        submodule \
-          update \
-          --init \
-          "deps/fmtlib"
-    elif [[ "${_git}" == "false" ]]; then
-      if [[ "${_evmfs}" == "false" ]]; then
-        if [[ "${_git_http}" == "github" ]]; then
-          _github_tarball_submodule_get \
-            "fmt" \
-            "${_fmtlib_url}" \
-            "${_fmtlib_commit}" \
-            "deps/fmtlib"
-          _github_tarball_submodule_get \
-            "json" \
-            "${_json_url}" \
-            "${_json_commit}" \
-            "deps/nlohmann-json"
-          _github_tarball_submodule_get \
-            "range-v3" \
-            "${_range_v3_url}" \
-            "${_range_v3_commit}" \
-            "deps/range-v3"
-          if [[ "${_debug}" == "true" ]]; then
-            tree \
-              "${srcdir}/${_tarname}/deps"
-          fi
-          rm \
-            "${srcdir}/${_tarname}/.gitmodules"
-        elif [[ "${_git_http}" == "gitlab" ]]; then
-          _msg=(
-            "You can take an extra effort"
-            "if you want to retrieve"
-            "the sources from Gitlab"
-            "this time. Still it builds"
-            "normally."
-          )
-          echo \
-            "${_msg[*]}"
-          exit \
-            1
-          tar \
-            xf \
-            "${srcdir}/${_tarfile}"
-        fi
-      elif [[ "${_evmfs}" == "true" ]]; then
-        _msg=(
-          "I may have already made"
-          "whole 'fmt' sources undeletable but then"
-          "I have packaged only 'fmt8' I'm not"
-          "sure, still it seemed quite excessive"
-          "bringing down 'fmt8' today."
-        )
-        echo \
-          "${_msg[*]}"
-      fi
-    fi
-  fi
+  # _fmtlib_available="$(
+  #   find \
+  #     "${srcdir}/${_tarname}/deps/fmtlib" \
+  #     -mindepth \
+  #       1 \
+  #     -maxdepth \
+  #       1 \
+  #     -type \
+  #       "f" || \
+  #   true)"
+  # if [[ "${_fmtlib_available}" == "" ]]; then
+  #   if [[ "${_git}" == "true" ]]; then
+  #     git \
+  #       -C \
+  #         "${srcdir}/${_tarname}" \
+  #       submodule \
+  #         update \
+  #         --init \
+  #         "deps/fmtlib"
+  #   elif [[ "${_git}" == "false" ]]; then
+  #     if [[ "${_evmfs}" == "false" ]]; then
+  #       if [[ "${_git_http}" == "github" ]]; then
+  #         _github_tarball_submodule_get \
+  #           "fmt" \
+  #           "${_fmtlib_url}" \
+  #           "${_fmtlib_commit}" \
+  #           "deps/fmtlib"
+  #         _github_tarball_submodule_get \
+  #           "json" \
+  #           "${_json_url}" \
+  #           "${_json_commit}" \
+  #           "deps/nlohmann-json"
+  #         _github_tarball_submodule_get \
+  #           "range-v3" \
+  #           "${_range_v3_url}" \
+  #           "${_range_v3_commit}" \
+  #           "deps/range-v3"
+  #         if [[ "${_debug}" == "true" ]]; then
+  #           tree \
+  #             "${srcdir}/${_tarname}/deps"
+  #         fi
+  #         rm \
+  #           "${srcdir}/${_tarname}/.gitmodules"
+  #       elif [[ "${_git_http}" == "gitlab" ]]; then
+  #         _msg=(
+  #           "You can take an extra effort"
+  #           "if you want to retrieve"
+  #           "the sources from Gitlab"
+  #           "this time. Still it builds"
+  #           "normally."
+  #         )
+  #         echo \
+  #           "${_msg[*]}"
+  #         exit \
+  #           1
+  #         tar \
+  #           xf \
+  #           "${srcdir}/${_tarfile}"
+  #       fi
+  #     elif [[ "${_evmfs}" == "true" ]]; then
+  #       _msg=(
+  #         "I may have already made"
+  #         "whole 'fmt' sources undeletable but then"
+  #         "I have packaged only 'fmt8' I'm not"
+  #         "sure, still it seemed quite excessive"
+  #         "bringing down 'fmt8' today."
+  #       )
+  #       echo \
+  #         "${_msg[*]}"
+  #     fi
+  #   fi
+  # fi
 }
 
 _usr_get() {
