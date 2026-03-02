@@ -133,7 +133,7 @@ variables:
       echo \
         "Free memory: '${_mem_free}'"
       _ramdisk_size="$(( \
-        "${_mem_free}" / 2000 ))"
+        "${_mem_free}" / 6000 ))"
       mount \
         -o \
           "size=${_ramdisk_size}M" \
