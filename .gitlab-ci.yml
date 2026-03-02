@@ -163,10 +163,13 @@ variables:
       echo \
         "Free storage: '${_storage_free}'"
       _swapfile_size="$(( \
-        "${_storage_free}" / 3000 ))"
+        "${_storage_free}" / 2000 ))"
       fallocate \
         -l \
           "${_swapfile_size}M" \
+        "/swapfile"
+      chown \
+        "0600" \
         "/swapfile"
       mkswap \
         "/swapfile"
