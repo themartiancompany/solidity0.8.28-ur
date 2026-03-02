@@ -347,7 +347,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=69
+pkgrel=70
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -622,6 +622,9 @@ elif [[ "${_evmfs}" == "false" ]]; then
     _src="${_tarfile}::${_uri}"
   fi
 fi
+options=(
+  '!lto'
+)
 if [[ -v "_src" ]]; then
   source+=(
     "${_src}"
@@ -937,11 +940,13 @@ _compile() {
     -Wno-unused-but-set-variable
     # -Wno-unknown-warning-option
     -Wno-deprecated-declarations
+    -ffat-lto-objects
+    -ffat-lto-objects
     # -Wno-dangling-reference
     # -Wno-overloaded-virtual
     # -Wno-range-loop-construct
     # -Wno-sign-conversion
-    # -Wno-aggressive-loop-optimizations
+    -Wno-aggressive-loop-optimizations
   )
   if [[ "${_os}" == "Android" ]]; then
     _cxxflags+=(
