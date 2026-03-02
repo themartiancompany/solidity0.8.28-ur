@@ -168,7 +168,7 @@ variables:
         -l \
           "${_swapfile_size}M" \
         "/swapfile"
-      chown \
+      chmod \
         "0600" \
         "/swapfile"
       mkswap \
