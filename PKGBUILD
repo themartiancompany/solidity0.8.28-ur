@@ -347,7 +347,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=77
+pkgrel=78
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -467,8 +467,8 @@ provides=(
 )
 conflicts=(
   "solc${pkgver}"
-  "${_pkg}-bin"
-  "${_pkg}-git"
+  "${pkgname}-bin"
+  "${pkgname}-git"
 )
 _cvc4_optdepends=(
   "cvc4:"
