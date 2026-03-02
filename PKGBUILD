@@ -347,7 +347,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=76
+pkgrel=77
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -940,8 +940,8 @@ _compile() {
     -Wno-unused-but-set-variable
     # -Wno-unknown-warning-option
     -Wno-deprecated-declarations
-    -ffat-lto-objects
-    -ffat-lto-objects
+    -Wno-maybe-uninitialized
+    # -ffat-lto-objects
     # -Wno-dangling-reference
     # -Wno-overloaded-virtual
     # -Wno-range-loop-construct
