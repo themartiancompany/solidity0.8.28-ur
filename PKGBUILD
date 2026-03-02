@@ -335,6 +335,7 @@ _pkg=solidity
 _0_8_28_commit="7893614a31fbeacd1966994e310ed4f760772658"
 _bundle_commit="142aa62e6805505b6a06cbeeec530f5c8bf0bfdd"
 _0_8_28_1_commit="e67a5cbca580ea980920e5f01a2ac2d43a365b34"
+_0_8_28_2_commit="0d21e09a807eb406307224be50ab5ab4934a425c"
 pkgver=0.8.28
 _fmtlib_pkgver=11.0.2
 _fmtlib_commit="0c9fce2ffefecfdce794e1859584e25877b7b592"
@@ -371,9 +372,9 @@ else
       _commit="${_bundle_commit}"
     elif [[ "${_evmfs}" == "false" ]]; then
       if [[ "${_boost_183}" == "true" ]]; then
-        _commit="${_0_8_28_1_commit}"
+        _commit="${_0_8_28_2_commit}"
       elif [[ "${_boost_latest}" == "true" ]]; then
-        _commit="${_0_8_28_1_commit}"
+        _commit="${_0_8_28_2_commit}"
       fi
     fi
   fi
@@ -495,12 +496,16 @@ elif [[ "${_git}" == "true" ]]; then
   _tarname="${_pkg}-${_tag}"
 fi
 _0_8_28_1_tarname="${_pkg}-${_0_8_28_1_commit}"
+_0_8_28_2_tarname="${_pkg}-${_0_8_28_2_commit}"
 _tarfile="${_tarname}.${_archive_format}"
 _0_8_28_1_tarfile="${_0_8_28_1_tarname}.${_archive_format}"
+_0_8_28_2_tarfile="${_0_8_28_2_tarname}.${_archive_format}"
 _bundle_sum="77860b58f9d6c4a9a9cb1ceaae7ebe5d856f91f3ccd96f67d5ea6a019d79d1fb"
 _bundle_sig_sum="7f737e7a88fdb8e96b428974592def4bbdf5bf24656b12ac5af76084b7fca095"
 _0_8_28_1_sum="3a174458dedac6d20314d06274fb1f9d5c47ce9620a37204e79f21fa71cc38ac"
 _0_8_28_1_sig_sum="1fe5518ce8693480af6461e6857651a0e8ce2a7aed104300b06d4bcaf9967658"
+_0_8_28_2_sum="75f6f0caccdef18622fae68120cd9f44faf04d01cc3324fc42c1dee4de42651f"
+_0_8_28_2_sig_sum="29c5d50f32ca1fa99dba91b7a026f73b118b167c5dffca77ff523be084d9f26d"
 _fmtlib_sum="SKIP"
 _fmtlib_sig_sum="SKIP"
 _github_sum="SKIP"
@@ -546,16 +551,23 @@ _evmfs_address="0x69470b18f8b8b5f92b48f6199dcb147b4be96571"
 # Harmony
 _0_8_28_1_net="1666600000"
 _0_8_28_1_address="0x1f762a05cfab651d3d95778f9c89c46545913623"
+_0_8_28_2_net="${_0_8_28_1_net}"
+_0_8_28_2_address="${_0_8_28_2_address}"
 _evmfs_dir="evmfs://${_evmfs_net}/${_evmfs_address}/${_evmfs_ns}"
 _0_8_28_1_dir="evmfs://${_0_8_28_1_net}/${_0_8_28_1_address}/${_evmfs_ns}"
+_0_8_28_2_dir="${_0_8_28_1_dir}"
 _evmfs_uri="${_evmfs_dir}/${_bundle_sum}"
 _evmfs_src="${_tarfile}::${_evmfs_uri}"
 _sig_uri="${_evmfs_dir}/${_bundle_sig_sum}"
 _sig_src="${_tarfile}.sig::${_sig_uri}"
 _0_8_28_1_uri="${_0_8_28_1_dir}/${_0_8_28_1_sum}"
+_0_8_28_2_uri="${_0_8_28_2_dir}/${_0_8_28_2_sum}"
 _0_8_28_1_src="${_0_8_28_1_tarfile}::${_0_8_28_1_uri}"
+_0_8_28_2_src="${_0_8_28_2_tarfile}::${_0_8_28_2_uri}"
 _0_8_28_1_sig_uri="${_0_8_28_1_dir}/${_0_8_28_1_sig_sum}"
+_0_8_28_2_sig_uri="${_0_8_28_2_dir}/${_0_8_28_2_sig_sum}"
 _0_8_28_1_sig_src="${_0_8_28_1_tarfile}.sig::${_0_8_28_1_sig_uri}"
+_0_8_28_2_sig_src="${_0_8_28_2_tarfile}.sig::${_0_8_28_2_sig_uri}"
 if [[ "${_evmfs}" == "true" ]]; then
   if [[ "${_git}" == "false" ]]; then
     makedepends+=(
@@ -575,12 +587,12 @@ if [[ "${_evmfs}" == "true" ]]; then
     )
     if [[ "${_boost_16}" == "false" ]]; then
       source+=(
-        "${_0_8_28_1_src}"
-        "${_0_8_28_1_sig_src}"
+        "${_0_8_28_2_src}"
+        "${_0_8_28_2_sig_src}"
       )
       sha256sums+=(
-        "${_0_8_28_1_sum}"
-        "${_0_8_28_1_sig_sum}"
+        "${_0_8_28_2_sum}"
+        "${_0_8_28_2_sig_sum}"
       )
     fi
   fi
@@ -743,11 +755,11 @@ prepare() {
       if [[ "${_boost_183}" == "true" ]]; then
         _git_unbundle_update \
           "${srcdir}/${_tarname}" \
-          "${srcdir}/${_pkg}-${_0_8_28_1_commit}"
+          "${srcdir}/${_pkg}-${_0_8_28_2_commit}"
       elif [[ "${_boost_latest}" == "true" ]]; then
         _git_unbundle_update \
           "${srcdir}/${_tarname}" \
-          "${srcdir}/${_pkg}-${_0_8_28_1_commit}"
+          "${srcdir}/${_pkg}-${_0_8_28_2_commit}"
       fi
     fi
   fi
