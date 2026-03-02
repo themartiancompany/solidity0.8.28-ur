@@ -554,7 +554,7 @@ _evmfs_address="0x69470b18f8b8b5f92b48f6199dcb147b4be96571"
 _0_8_28_1_net="1666600000"
 _0_8_28_1_address="0x1f762a05cfab651d3d95778f9c89c46545913623"
 _0_8_28_2_net="${_0_8_28_1_net}"
-_0_8_28_2_address="${_0_8_28_2_address}"
+_0_8_28_2_address="${_0_8_28_1_address}"
 _evmfs_dir="evmfs://${_evmfs_net}/${_evmfs_address}/${_evmfs_ns}"
 _0_8_28_1_dir="evmfs://${_0_8_28_1_net}/${_0_8_28_1_address}/${_evmfs_ns}"
 _0_8_28_2_dir="${_0_8_28_1_dir}"
@@ -925,15 +925,15 @@ _compile() {
       "${_compiler}")"
   _ldflags+=(
     ${LDFLAGS}
-    -Wl,"${_libfmt}"
+    # -Wl,"${_libfmt}"
   )
   _cppflags=(
     ${CPPFLAGS}
-    -I"/usr/include/fmt11"
+    # -I"/usr/include/fmt11"
   )
   _cxxflags=(
     "${CXXFLAGS}"
-    -Wl,"${_libfmt}"
+    # -Wl,"${_libfmt}"
     -Wno-unused-but-set-variable
     # -Wno-unknown-warning-option
     -Wno-deprecated-declarations
