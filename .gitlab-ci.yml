@@ -167,14 +167,14 @@ variables:
       fallocate \
         -l \
           "${_swapfile_size}M" \
-        "/swapfile"
+        "/home/user/swapfile"
       chmod \
         "0600" \
-        "/swapfile"
+        "/home/user/swapfile"
       mkswap \
-        "/swapfile"
+        "/home/user/swapfile"
       swapon \
-        "/swapfile"
+        "/home/user/swapfile"
       swapon
   script:
     - ./.gitlab/ci/build.sh ${BUILD_SCRIPT_ARGS}
