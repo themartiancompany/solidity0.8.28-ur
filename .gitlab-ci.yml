@@ -151,31 +151,34 @@ variables:
       mount
 
     # Setup swap file
-    - >
-      df \
-        -h
-      _storage_free="$( \
-        df | \
-          grep \
-            "/$" | \
-          awk \
-            '{print $4}')"
-      echo \
-        "Free storage: '${_storage_free}'"
-      _swapfile_size="$(( \
-        "${_storage_free}" / 2000 ))"
-      fallocate \
-        -l \
-          "${_swapfile_size}M" \
-        "/home/user/swapfile"
-      chmod \
-        "0600" \
-        "/home/user/swapfile"
-      mkswap \
-        "/home/user/swapfile"
-      swapon \
-        "/home/user/swapfile"
-      swapon
+    # Commented because it seems
+    # the Gitlab Docker container
+    # can't activate swap
+    # - >
+    #   df \
+    #     -h
+    #   _storage_free="$( \
+    #     df | \
+    #       grep \
+    #         "/$" | \
+    #       awk \
+    #         '{print $4}')"
+    #   echo \
+    #     "Free storage: '${_storage_free}'"
+    #   _swapfile_size="$(( \
+    #     "${_storage_free}" / 2000 ))"
+    #   fallocate \
+    #     -l \
+    #       "${_swapfile_size}M" \
+    #     "/home/user/swapfile"
+    #   chmod \
+    #     "0600" \
+    #     "/home/user/swapfile"
+    #   mkswap \
+    #     "/home/user/swapfile"
+    #   swapon \
+    #     "/home/user/swapfile"
+    #   swapon
   script:
     - ./.gitlab/ci/build.sh ${BUILD_SCRIPT_ARGS}
 
