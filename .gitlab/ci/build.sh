@@ -29,6 +29,13 @@
 #  pakcage
 # $1: platform
 # $2: architecture
+# $3: namespace
+# $4: package
+# $5: (optional) project-id
+# $6: (optional) commit
+# $7: (optional) tag
+# $8: (optional) ci-job-token
+# $9: (optional) package-registry-url
 
 set \
   -euo \
@@ -42,10 +49,16 @@ _gur_mini() {
     _ns="${1}" \
     _pkg="${2}" \
     _release="${3}" \
+    _depends_skip \
+    _pacman_opts=() \
     _api \
     _url \
     _msg=() \
     _sig
+  _depends_skip="y"
+  if (( 3 < "${#}" )); then
+    _depends_skip="${4}"
+  fi
   _msg=(
     "Downloading '${_pkg}'"
     "binary CI release"
@@ -61,6 +74,16 @@ _gur_mini() {
       "${HOME}/${_ns}%2F${_pkg}-ur" | \
       jq \
         '.id')"
+  if [[ "${_project_id}" == "null" ]]; then
+    _msg=(
+      "The project '${_pkg}-ur' does not exist"
+      "in namespace '${_ns}'."
+    )
+    echo \
+      "${_msg[*]}"
+    return \
+      1
+  fi
   _api="https://gitlab.com/api/v4"
   _url="${_api}/projects/${_project_id}/releases"
   _gl_dl_retrieve \
@@ -90,9 +113,19 @@ _gur_mini() {
   rm \
     -rf \
     "${HOME}/"*".pkg.tar.xz.sig"
+  _pacman_opts+=(
+    -U
+  )
+  if [[ "${_depends_skip}" == "y" ]]; then
+    _pacman_opts+=(
+      -dd
+    )
+  fi
+  _pacman_opts+=(
+    --noconfirm
+  )
   pacman \
-    -Udd \
-    --noconfirm \
+    "${_pacman_opts[@]}" \
     "${HOME}/"*".pkg.tar.xz"
 }
 
@@ -587,7 +620,7 @@ _build() {
     echo \
       "${_msg[*]}"
     tree \
-      -L 5 \
+      -L 2 \
       "${_work_dir}"
     _oldpwd="${PWD}"
     cd \
@@ -704,6 +737,29 @@ _gl_dl_retrieve() {
     "${_url}"
 }
 
+_mem_free_get() {
+  free | \
+    grep \
+      "Mem:" | \
+    awk \
+      '{print $4}'
+}
+
+_show_config() {
+  _mem_free="$(
+    _mem_free_get)"
+  echo \
+    "Free memory: '${_mem_free}'"
+  mount | \
+    grep \
+      "/home/user/ramdisk"
+  inxi \
+    -e
+  du \
+    -hs \
+      /usr
+}
+
 readonly \
   platform="${1}" \
   arch="${2}" \
@@ -724,6 +780,7 @@ if (( 8 < "${#}" )); then
 fi
 
 _requirements
+_show_config
 _build
 
 # vim:set sw=2 sts=-1 et:
