@@ -51,6 +51,10 @@ variables:
     
     - >  
       export \
+        _os="$(
+          uname \
+            -o)"
+      export \
         _packages=(
           "bash"
           "git"
@@ -64,6 +68,7 @@ variables:
           "fakeroot"
           "gnupg"
           "make"
+          "nodejs-lts-jod"
           "python"
           "shfmt"
        )
