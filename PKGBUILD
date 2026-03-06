@@ -258,8 +258,8 @@ if [[ ! -v "_debug" ]]; then
   _debug="true"
 fi
 if [[ ! -v "_git" ]]; then
-  _git="true"
-  # _git="${_evmfs}"
+  # _git="true"
+  _git="${_evmfs}"
 fi
 if [[ ! -v "_git_service" ]]; then
   if [[ "${_boost_16}" == "true" ]]; then
@@ -347,7 +347,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=79
+pkgrel=80
 _pkgdesc=(
   "Smart contract programming language."
 )
