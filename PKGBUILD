@@ -370,7 +370,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=94
+pkgrel=96
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -423,6 +423,8 @@ if [[ "${_os}" == "Android" ]]; then
     "boost-static"
   )
 elif [[ "${_os}" == "GNU/Linux" ]]; then
+  _boost_pkgname="boost-libs"
+elif [[ "${_os}" == "Msys" ]]; then
   _boost_pkgname="boost-libs"
 fi
 # if [[ "${_fmt_11}" == "true" ]]; then

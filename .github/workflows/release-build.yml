@@ -1841,18 +1841,22 @@ jobs:
       - name:
           Installs build dependencies.
         run: |
+          pacman \
+            -Ss \
+            "boost" || \
+          true
           dos2unix \
             "PKGBUILD"
           _evmfs="false" \
           _git_service="github" \
-            "recipe-get" \
-              -v \
-              -o \
-                "array" \
-              -d \
-                " " \
-              "PKGBUILD" \
-              "makedepends" || \
+          recipe-get \
+            -v \
+            -o \
+              "array" \
+            -d \
+              " " \
+            "PKGBUILD" \
+            "makedepends" || \
           true
           _evmfs="false" \
           _git_service="github" \
