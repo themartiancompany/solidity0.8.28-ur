@@ -4,7 +4,8 @@
 #    release.yaml
 #
 #    ----------------------------------------------------------------------
-#    Copyright © 2024, 2025 Guilherme Janczak,
+#    Copyright © 2024, 2025
+#                2026       Guilherme Janczak,
 #                           Robert Kirkman,
 #                           Pellegrino Prevete
 #
@@ -1824,20 +1825,22 @@ jobs:
       - name:
           Installs latest EVM GNUPG.
         run: |
-          git \
-            clone \
-              --single-branch \
-              --depth=1 \
-              "https://github.com/themartiancompany/evm-gnupg" \
-              "${HOME}/evm-gnupg-src" || \
-          true
-          cd \
-            "${HOME}/evm-gnupg-src"
-          make \
-            -C \
-                "${HOME}/evm-gnupg-src" \
-            PREFIX="/usr" \
-            install-scripts
+          bash \
+            ".github/gur-mini"
+          # git \
+          #   clone \
+          #     --single-branch \
+          #     --depth=1 \
+          #     "https://github.com/themartiancompany/evm-gnupg" \
+          #     "${HOME}/evm-gnupg-src" || \
+          # true
+          # cd \
+          #   "${HOME}/evm-gnupg-src"
+          # make \
+          #   -C \
+          #       "${HOME}/evm-gnupg-src" \
+          #   PREFIX="/usr" \
+          #   install-scripts
       - name:
           Installs latest Gur.
         run: |
