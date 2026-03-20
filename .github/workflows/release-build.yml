@@ -1844,6 +1844,7 @@ jobs:
           _evmfs="false" \
           _git_service="github" \
             "recipe-get" \
+              -v \
               -o \
                 "array" \
               -d \
