@@ -379,7 +379,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=108
+pkgrel=109
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -665,6 +665,8 @@ if [[ -v "_src" ]]; then
   source+=(
     "${_src}"
   )
+fi
+if [[ -v "_sum" ]]; then
   sha256sums+=(
     "${_sum}"
   )

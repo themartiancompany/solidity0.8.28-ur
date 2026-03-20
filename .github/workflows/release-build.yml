@@ -55,7 +55,7 @@ jobs:
             architecture:
               i686
           - runner:
-              ubuntu-24.04-armv7l
+              ubuntu-24.04-arm
             platform:
               android
             platform_target:
@@ -160,7 +160,7 @@ jobs:
               -p \
               "${HOME}"
       - name:
-          Installs Python.
+          Installs Python and Github CLI.
         run: |
           /entrypoint.sh \
             pkg \
@@ -226,6 +226,7 @@ jobs:
             pkg \
               install \
                 -y \
+                "gh" \
                 "git" \
                 "jq" \
                 "tree"
@@ -1874,6 +1875,10 @@ jobs:
       - name:
           Installs recent EVM GNUPG.
         run: |
+          pacman \
+            -S \
+            --noconfirm \
+            "github-cli"
           bash \
             ".github/gur-mini" \
             "themartiancompany" \
