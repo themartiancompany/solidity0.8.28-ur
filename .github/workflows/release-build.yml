@@ -1878,7 +1878,7 @@ jobs:
           pacman \
             -S \
             --noconfirm \
-            "github-cli"
+            "mingw-w64-${{ matrix.env }}-github-cli"
           bash \
             ".github/gur-mini" \
             "themartiancompany" \
