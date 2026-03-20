@@ -1841,6 +1841,8 @@ jobs:
       - name:
           Installs build dependencies.
         run: |
+          dos2unix \
+            "PKGBUILD"
           _evmfs="false" \
           _git_service="github" \
             "recipe-get" \
