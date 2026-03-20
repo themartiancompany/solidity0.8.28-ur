@@ -347,22 +347,24 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=86
+pkgrel=87
 _pkgdesc=(
   "Smart contract programming language."
 )
 pkgdesc="${_pkgdesc[*]}"
-arch=(
-  "x86_64"
-  "i686"
-  "aarch64"
-  "arm"
-  "armv7l"
-  "armv6l"
-  "mips"
-  "powerpc"
-  "pentium4"
-)
+if [[ ! -v "arch" ]]; then
+  arch=(
+    "x86_64"
+    "i686"
+    "aarch64"
+    "arm"
+    "armv7l"
+    "armv6l"
+    "mips"
+    "powerpc"
+    "pentium4"
+  )
+fi
 if [[ "${_ns}" == "argotorg" ]]; then
   _commit="${_0_8_28_commit}"
 else

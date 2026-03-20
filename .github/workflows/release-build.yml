@@ -55,6 +55,10 @@ jobs:
               i686
           - runner:
               ubuntu-24.04-arm
+            platform:
+              android
+            platform_target:
+              termux
             architecture:
               arm
           - runner:
@@ -822,7 +826,7 @@ jobs:
               true
           done
       - name:
-          Builds the package.
+          Builds the Android package.
         run: |
           export \
             _pkgbase="$( \
@@ -834,8 +838,15 @@ jobs:
             mkdir \
               -p \
               "${HOME}/${_pkgbase}-build"
+          _arch="$( \
+            uname \
+              -m)"
+          if [[ "${_arch}" == "armv8l" ]]; then
+            _arch="arm"
+          fi
           /entrypoint.sh \
             _evmfs="false" \
+            arch="${_arch} \
             TERMUX_VERSION=50 \
             _git_service="github" \
             reallymakepkg \
