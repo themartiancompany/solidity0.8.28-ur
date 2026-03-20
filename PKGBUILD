@@ -347,7 +347,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=84
+pkgrel=85
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -965,7 +965,6 @@ _compile() {
    _cxx_compiler="${_compiler}++"
    _cxxflags+=(
      -Wno-uninitialized
-     -Wno-aggressive-loop-optimizations
    )
   fi
   _cxx="$(
