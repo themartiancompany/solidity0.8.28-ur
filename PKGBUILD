@@ -42,6 +42,9 @@
 _os="$(
   uname \
     -o)"
+_arch="$(
+  uname \
+    -m)"
 _evmfs_available="$(
   command \
     -v \
@@ -91,14 +94,19 @@ _boost_pkgver_get() {
   local \
     _modes=() \
     _pkgs=() \
-    _cut_opts=()
+    _cut_opts=() \
+    _prefix
+  _prefix=""
   _modes+=(
     "Q"
     "S"
   )
+  if [[ "${_os}" == "Msys" ]]; then
+    _prefix="mingw-w64-${_arch}-"
+  fi
   _pkgs+=(
-    "boost-libs"
-    "boost"
+    "${_prefix}boost-libs"
+    "${_prefix}boost"
   )
   _cut_opts=(
     -d
@@ -370,7 +378,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=98
+pkgrel=99
 _pkgdesc=(
   "Smart contract programming language."
 )
