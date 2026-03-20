@@ -276,7 +276,6 @@ if [[ ! -v "_git_http" ]]; then
     _git_http="${_git_service}"
   fi
 fi
-
 if [[ "${_os}" == "Android" ]]; then
   _libc="ndk-sysroot"
   _compiler="clang"
@@ -371,7 +370,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=90
+pkgrel=91
 _pkgdesc=(
   "Smart contract programming language."
 )
