@@ -1906,7 +1906,7 @@ jobs:
                   "${_pkg}" \
                   "name")"; \
             echo \
-              "Installing '${_depend_name}' with pacman."; \
+              "Installing mingw '${_depend_name}' build dependency with pacman."; \
             pacman \
               -S \
                 --noconfirm \
@@ -1922,6 +1922,24 @@ jobs:
                   "name")"; \
             echo \
               "Installing '${_depend_name}' with fur."; \
+              fur \
+                -v \
+                -t \
+                  "ci" \
+                -m \
+                  "github" \
+                -p \
+                  "pacman" \
+                "${_depend_name}" || \
+              true; \
+          done
+          for _pkg in $(cat "${HOME}/makedepends-mingw"); do \
+            _depend_name="$( \
+                version-split \
+                  "${_pkg}" \
+                  "name")"; \
+            echo \
+              "Installing MinGW '${_depend_name}' build dependency with fur."; \
               fur \
                 -v \
                 -t \
