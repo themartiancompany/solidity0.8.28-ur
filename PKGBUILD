@@ -379,7 +379,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=103
+pkgrel=104
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -814,6 +814,12 @@ prepare() {
     sed \
       -e \
         "/-Wsign-conversion/d" \
+      -i \
+      "${srcdir}/${_tarname}/cmake/EthCompilerSettings.cmake"
+
+    sed \
+      -e \
+        "/-Wno-conversion/d" \
       -i \
       "${srcdir}/${_tarname}/cmake/EthCompilerSettings.cmake"
   fi
