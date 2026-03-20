@@ -1842,6 +1842,7 @@ jobs:
           Installs build dependencies.
         run: |
           _evmfs="false" \
+          _git_service="github" \
             "recipe-get" \
               -o \
                 "array" \
