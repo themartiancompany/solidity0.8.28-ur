@@ -1849,7 +1849,8 @@ jobs:
               -d \
                 " " \
               "PKGBUILD" \
-              "makedepends"
+              "makedepends" || \
+          true
           _evmfs="false" \
           _git_service="github" \
             "recipe-get" \
