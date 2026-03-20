@@ -744,6 +744,23 @@ jobs:
               "${HOME}/reallymakepkg-src/configs/makepkg.android.conf" \
               "/data/data/com.termux/files/usr/etc/reallymakepkg/makepkg.android.conf"
       - name:
+          Installs latest EVM GNUPG.
+        run: |
+          /entrypoint.sh \
+            git \
+              clone \
+                --single-branch \
+                --depth=1 \
+                "https://github.com/themartiancompany/evm-gnupg" \
+                "${HOME}/evm-gnupg-src" || \
+            true
+          cd \
+            "${HOME}/evm-gnupg-src"
+          /entrypoint.sh \
+            make \
+              PREFIX="/usr" \
+              install-scripts
+      - name:
           Installs latest Gur.
         run: |
           /entrypoint.sh \
@@ -1449,6 +1466,22 @@ jobs:
             "${HOME}/reallymakepkg-src/configs/makepkg.gnu.conf" \
             "/etc/reallymakepkg/makepkg.gnu.conf"
       - name:
+          Installs latest EVM GNUPG.
+        run: |
+          git \
+            clone \
+              --single-branch \
+              --depth=1 \
+              "https://github.com/themartiancompany/evm-gnupg" \
+              "${HOME}/evm-gnupg-src" || \
+          true
+          cd \
+            "${HOME}/evm-gnupg-src"
+          /entrypoint.sh \
+            make \
+              PREFIX="/usr" \
+              install-scripts
+      - name:
           Installs latest Gur.
         run: |
           git \
@@ -1789,6 +1822,24 @@ jobs:
             -vDm644 \
             "${HOME}/reallymakepkg-src/configs/makepkg.gnu.conf" \
             "/etc/reallymakepkg/makepkg.gnu.conf"
+      - name:
+          Installs latest EVM GNUPG.
+        run: |
+          git \
+            clone \
+              --single-branch \
+              --depth=1 \
+              "https://github.com/themartiancompany/evm-gnupg" \
+              "${HOME}/evm-gnupg-src" || \
+          true
+          cd \
+            "${HOME}/evm-gnupg-src"
+          /entrypoint.sh \
+            make \
+              -C \
+                  "${HOME}/evm-gnupg-src" \
+              PREFIX="/usr" \
+              install-scripts
       - name:
           Installs latest Gur.
         run: |
