@@ -347,7 +347,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=85
+pkgrel=86
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -949,6 +949,7 @@ _compile() {
     _cxxflags+=(
       # -Wno-unqualified-std-cast-call
       # -Wno-dangling-field
+      -Wno-deprecated-literal-operator
     )
   elif [[ "${_os}" == "GNU/Linux" ]]; then
     _cxxflags+=(
