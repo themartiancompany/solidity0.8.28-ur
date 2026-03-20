@@ -381,6 +381,7 @@ if [[ ! -v "arch" ]]; then
     "i686"
     "aarch64"
     "arm"
+    "armv8l"
     "armv7l"
     "armv6l"
     "mips"
