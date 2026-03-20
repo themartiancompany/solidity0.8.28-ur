@@ -1477,10 +1477,9 @@ jobs:
           true
           cd \
             "${HOME}/evm-gnupg-src"
-          /entrypoint.sh \
-            make \
-              PREFIX="/usr" \
-              install-scripts
+          make \
+            PREFIX="/usr" \
+            install-scripts
       - name:
           Installs latest Gur.
         run: |
@@ -1834,12 +1833,11 @@ jobs:
           true
           cd \
             "${HOME}/evm-gnupg-src"
-          /entrypoint.sh \
-            make \
-              -C \
-                  "${HOME}/evm-gnupg-src" \
-              PREFIX="/usr" \
-              install-scripts
+          make \
+            -C \
+                "${HOME}/evm-gnupg-src" \
+            PREFIX="/usr" \
+            install-scripts
       - name:
           Installs latest Gur.
         run: |
