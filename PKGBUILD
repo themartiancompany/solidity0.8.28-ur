@@ -347,7 +347,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=83
+pkgrel=84
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -939,13 +939,11 @@ _compile() {
     -Wno-unused-but-set-variable
     # -Wno-unknown-warning-option
     -Wno-deprecated-declarations
-    -Wno-maybe-uninitialized
     # -ffat-lto-objects
     # -Wno-dangling-reference
     # -Wno-overloaded-virtual
     # -Wno-range-loop-construct
     # -Wno-sign-conversion
-    -Wno-aggressive-loop-optimizations
   )
   if [[ "${_os}" == "Android" ]]; then
     _cxxflags+=(
@@ -959,8 +957,16 @@ _compile() {
   fi
   if [[ "${_compiler}" == "gcc" ]]; then
     _cxx_compiler="g++"
+   _cxxflags+=(
+     -Wno-maybe-uninitialized
+     -Wno-aggressive-loop-optimizations
+   )
   elif [[ "${_compiler}" == "clang" ]]; then
    _cxx_compiler="${_compiler}++"
+   _cxxflags+=(
+     -Wno-uninitialized
+     -Wno-aggressive-loop-optimizations
+   )
   fi
   _cxx="$(
     command \
