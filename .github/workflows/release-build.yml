@@ -1823,28 +1823,6 @@ jobs:
             "${HOME}/reallymakepkg-src/configs/makepkg.gnu.conf" \
             "/etc/reallymakepkg/makepkg.gnu.conf"
       - name:
-          Installs recent EVM GNUPG.
-        run: |
-          bash \
-            ".github/gur-mini" \
-            "themartiancompany" \
-            "evm-gnupg" \
-            "0.0.0.0.0.0.0.0.1.1.1.1.1.1-15"
-          # git \
-          #   clone \
-          #     --single-branch \
-          #     --depth=1 \
-          #     "https://github.com/themartiancompany/evm-gnupg" \
-          #     "${HOME}/evm-gnupg-src" || \
-          # true
-          # cd \
-          #   "${HOME}/evm-gnupg-src"
-          # make \
-          #   -C \
-          #       "${HOME}/evm-gnupg-src" \
-          #   PREFIX="/usr" \
-          #   install-scripts
-      - name:
           Installs latest Gur.
         run: |
           git \
@@ -1893,6 +1871,28 @@ jobs:
                 "false"
       - uses:
           actions/checkout@v3
+      - name:
+          Installs recent EVM GNUPG.
+        run: |
+          bash \
+            ".github/gur-mini" \
+            "themartiancompany" \
+            "evm-gnupg" \
+            "0.0.0.0.0.0.0.0.1.1.1.1.1.1-15"
+          # git \
+          #   clone \
+          #     --single-branch \
+          #     --depth=1 \
+          #     "https://github.com/themartiancompany/evm-gnupg" \
+          #     "${HOME}/evm-gnupg-src" || \
+          # true
+          # cd \
+          #   "${HOME}/evm-gnupg-src"
+          # make \
+          #   -C \
+          #       "${HOME}/evm-gnupg-src" \
+          #   PREFIX="/usr" \
+          #   install-scripts
       - name:
           Installs build dependencies.
         run: |
