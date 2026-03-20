@@ -834,16 +834,21 @@ jobs:
                 recipe-get \
                   "PKGBUILD" \
                   "pkgbase")"
+          _pkgbase="$( \
+            /entrypoint.sh \
+              recipe-get \
+                "PKGBUILD" \
+                "pkgbase")" && \
           /entrypoint.sh \
             mkdir \
               -p \
-              "${HOME}/${_pkgbase}-build"
+              "${HOME}/${_pkgbase}-build" && \
           _arch="$( \
             uname \
-              -m)"
+              -m)" && \
           if [[ "${_arch}" == "armv8l" ]]; then
             _arch="arm"
-          fi
+          fi && \
           /entrypoint.sh \
             _evmfs="false" \
             arch="${_arch}" \

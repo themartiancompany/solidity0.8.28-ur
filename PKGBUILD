@@ -276,10 +276,34 @@ if [[ ! -v "_git_http" ]]; then
     _git_http="${_git_service}"
   fi
 fi
+
 if [[ "${_os}" == "Android" ]]; then
+  _libc="ndk-sysroot"
   _compiler="clang"
+  _libcompiler="libllvm"
+  _sh="dash"
 elif [[ "${_os}" == "GNU/Linux" ]]; then
+  _libc="glibc"
   _compiler="gcc"
+  _libcompiler="libgcc"
+  _sh="sh"
+elif [[ "${_os}" == "Msys" ]]; then
+  _libc="msys2-w32api-runtime"
+  _libc_headers="msys2-w32api-headers"
+  _compiler="gcc"
+  _libcompiler="gcc-libs"
+  _sh="sh"
+else
+  _msg=(
+    "Unknown os '${_os}'."
+  )
+  msg \
+    "${_msg[*]}"
+  _libc="msys2-w32api-runtime"
+  _libc_headers="msys2-w32api-headers"
+  _compiler="gcc"
+  _libcompiler="gcc-libs"
+  _sh="sh"
 fi
 if [[ ! -v "_cmake_generator" ]]; then
   _cmake_generator="make"
@@ -347,7 +371,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=88
+pkgrel=89
 _pkgdesc=(
   "Smart contract programming language."
 )
