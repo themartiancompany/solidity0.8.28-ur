@@ -378,7 +378,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=99
+pkgrel=100
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -990,6 +990,11 @@ _compile() {
   elif [[ "${_os}" == "GNU/Linux" ]]; then
     _cxxflags+=(
       # -Wno-overloaded-virtual
+    )
+    # -Wno-sign-conversion
+  elif [[ "${_os}" == "Msys" ]]; then
+    _cxxflags+=(
+      -Wno-sign-conversion
     )
   fi
   if [[ "${_compiler}" == "gcc" ]]; then
