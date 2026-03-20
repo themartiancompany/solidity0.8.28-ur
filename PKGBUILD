@@ -347,7 +347,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=81
+pkgrel=83
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -510,8 +510,8 @@ _0_8_28_2_sum="75f6f0caccdef18622fae68120cd9f44faf04d01cc3324fc42c1dee4de42651f"
 _0_8_28_2_sig_sum="29c5d50f32ca1fa99dba91b7a026f73b118b167c5dffca77ff523be084d9f26d"
 _fmtlib_sum="SKIP"
 _fmtlib_sig_sum="SKIP"
-_github_sum="SKIP"
-_github_sig_sum="SKIP"
+_github_sum="5677a8ef1a9d3a8e6b97f8ce5cbffb7e5f29ba4425d3977c5d4c9e99c41df641"
+_github_sig_sum="81923187d54e4c0d123756a03a82981cac500ce2d685a248924a488775a11622"
 _gitlab_sum="SKIP"
 _gitlab_sig_sum="SKIP"
 _github_release_sum="SKIP"
@@ -606,7 +606,6 @@ elif [[ "${_evmfs}" == "false" ]]; then
     if [[ "${_git_service}" == "github" ]]; then
       if [[ "${_tag_name}" == "commit" ]]; then
         _uri="${url}/archive/${_commit}.${_archive_format}"
-        _sum="SKIP"
       elif [[ "${_tag_name}" == "pkgver" ]]; then
         _uri="${url}/releases/download/v${pkgver}/${_tarname}.tar.gz"
         _sum="${_github_release_sum}"
