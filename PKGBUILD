@@ -809,11 +809,13 @@ prepare() {
       "${_commit_hash}" > \
       "${srcdir}/${_tarname}/commit_hash.txt"
   fi
-  # sed \
-  #   -e \
-  #     "/-Wsign-conversion/d" \
-  #   -i \
-  #   "${srcdir}/${_tarname}/cmake/EthCompilerSettings.cmake"
+  if [[ "${_os}" == "Msys" ]]; then
+    sed \
+      -e \
+        "/-Wsign-conversion/d" \
+      -i \
+      "${srcdir}/${_tarname}/cmake/EthCompilerSettings.cmake"
+  fi
   # _cmake_version="$(
   #   ( cmake \
   #       --version |
