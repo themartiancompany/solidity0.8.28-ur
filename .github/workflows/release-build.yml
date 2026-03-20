@@ -846,7 +846,7 @@ jobs:
           fi
           /entrypoint.sh \
             _evmfs="false" \
-            arch="${_arch} \
+            arch="${_arch}" \
             TERMUX_VERSION=50 \
             _git_service="github" \
             reallymakepkg \
