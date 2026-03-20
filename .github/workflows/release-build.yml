@@ -1823,10 +1823,13 @@ jobs:
             "${HOME}/reallymakepkg-src/configs/makepkg.gnu.conf" \
             "/etc/reallymakepkg/makepkg.gnu.conf"
       - name:
-          Installs latest EVM GNUPG.
+          Installs recent EVM GNUPG.
         run: |
           bash \
-            ".github/gur-mini"
+            ".github/gur-mini" \
+            "themartiancompany" \
+            "evm-gnupg" \
+            "0.0.0.0.0.0.0.0.1.1.1.1.1.1-15"
           # git \
           #   clone \
           #     --single-branch \
