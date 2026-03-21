@@ -366,9 +366,9 @@ _pkg=solidity
 _0_8_28_commit="7893614a31fbeacd1966994e310ed4f760772658"
 _bundle_commit="142aa62e6805505b6a06cbeeec530f5c8bf0bfdd"
 _0_8_28_1_commit="e67a5cbca580ea980920e5f01a2ac2d43a365b34"
-# _0_8_28_2_commit="0d21e09a807eb406307224be50ab5ab4934a425c"
+_0_8_28_2_commit="0d21e09a807eb406307224be50ab5ab4934a425c"
 # It's the 3 actually
-_0_8_28_2_commit="122dca0cd7dafeb86ee84aea489b9506e8bdbf2d"
+# _0_8_28_2_commit="122dca0cd7dafeb86ee84aea489b9506e8bdbf2d"
 pkgver=0.8.28
 _fmtlib_pkgver=11.0.2
 _fmtlib_commit="0c9fce2ffefecfdce794e1859584e25877b7b592"
