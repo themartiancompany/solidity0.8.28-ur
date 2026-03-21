@@ -366,7 +366,9 @@ _pkg=solidity
 _0_8_28_commit="7893614a31fbeacd1966994e310ed4f760772658"
 _bundle_commit="142aa62e6805505b6a06cbeeec530f5c8bf0bfdd"
 _0_8_28_1_commit="e67a5cbca580ea980920e5f01a2ac2d43a365b34"
-_0_8_28_2_commit="0d21e09a807eb406307224be50ab5ab4934a425c"
+# _0_8_28_2_commit="0d21e09a807eb406307224be50ab5ab4934a425c"
+# It's the 3 actually
+_0_8_28_2_commit="122dca0cd7dafeb86ee84aea489b9506e8bdbf2d"
 pkgver=0.8.28
 _fmtlib_pkgver=11.0.2
 _fmtlib_commit="0c9fce2ffefecfdce794e1859584e25877b7b592"
@@ -378,7 +380,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=114
+pkgrel=116
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -546,8 +548,8 @@ _0_8_28_2_sum="75f6f0caccdef18622fae68120cd9f44faf04d01cc3324fc42c1dee4de42651f"
 _0_8_28_2_sig_sum="29c5d50f32ca1fa99dba91b7a026f73b118b167c5dffca77ff523be084d9f26d"
 _fmtlib_sum="SKIP"
 _fmtlib_sig_sum="SKIP"
-_github_sum="5677a8ef1a9d3a8e6b97f8ce5cbffb7e5f29ba4425d3977c5d4c9e99c41df641"
-_github_sig_sum="81923187d54e4c0d123756a03a82981cac500ce2d685a248924a488775a11622"
+_github_sum="148513c7f198896711982185fc33ad39d3a4d2d7d3a5e4c1368eaffe189c54ce"
+_github_sig_sum="a40ea6cb65e640366e5b7c6c98f35483c35b3c975035a418561bb9102866e6c1"
 _gitlab_sum="SKIP"
 _gitlab_sig_sum="SKIP"
 _github_release_sum="SKIP"
