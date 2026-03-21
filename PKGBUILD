@@ -378,7 +378,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=113
+pkgrel=114
 _pkgdesc=(
   "Smart contract programming language."
 )
@@ -1005,6 +1005,7 @@ _compile() {
     _cxxflags+=(
       -Wno-sign-conversion
       -Wno-conversion
+      -Wno-template-body
     )
   fi
   if [[ "${_compiler}" == "gcc" ]]; then
