@@ -48,10 +48,18 @@ jobs:
         include:
           - runner:
               ubuntu-24.04-arm
+            platform:
+              android
+            platform_target:
+              termux
             architecture:
               aarch64
           - runner:
               ubuntu-24.04
+            platform:
+              android
+            platform_target:
+              termux
             architecture:
               i686
           - runner:
@@ -82,6 +90,8 @@ jobs:
         - /tmp/node20:/__e/node20
     # approximate environment variables for actions that can't be forced to use entrypoint.sh
     env:
+      GH_TOKEN:
+        ${{ github.token }}
       TERMUX_MAIN_PACKAGE_FORMAT:
         debian
       TERMUX_VERSION:
@@ -160,7 +170,7 @@ jobs:
               -p \
               "${HOME}"
       - name:
-          Installs Python and Github CLI.
+          Installs Python.
         run: |
           /entrypoint.sh \
             pkg \
@@ -183,7 +193,19 @@ jobs:
           /entrypoint.sh \
             pip \
               install \
+                "setuptools"
+          /entrypoint.sh \
+            pip \
+              install \
                 "flit-core"
+          /entrypoint.sh \
+            pip \
+              install \
+                "cython"
+          /entrypoint.sh \
+            pip \
+              install \
+                "multidict"
       # - name:
       #     Installs Rust.
       #   run: |
@@ -766,6 +788,11 @@ jobs:
           Installs latest Gur.
         run: |
           /entrypoint.sh \
+            pkg \
+              install \
+                -y \
+                "gh"
+          /entrypoint.sh \
             git \
               clone \
                 --branch="master" \
@@ -848,6 +875,10 @@ jobs:
           Builds the Android package.
         run: |
           export \
+            _arch="$( \
+              uname \
+                -m)"
+          export \
             _pkgbase="$( \
               /entrypoint.sh \
                 recipe-get \
@@ -869,9 +900,30 @@ jobs:
             _arch="arm"; \
           fi && \
           /entrypoint.sh \
-            _evmfs="false" \
             arch="${_arch}" \
             TERMUX_VERSION=50 \
+            _evmfs="false" \
+            _git="false" \
+            _git_service="github" \
+            recipe-get \
+              -v \
+              "PKGBUILD" \
+              "source"
+          /entrypoint.sh \
+            arch="${_arch}" \
+            TERMUX_VERSION=50 \
+            _evmfs="false" \
+            _git="false" \
+            _git_service="github" \
+            recipe-get \
+              -v \
+              "PKGBUILD" \
+              "sha256sums" && \
+          /entrypoint.sh \
+            TERMUX_VERSION=50 \
+            arch="${_arch}" \
+            _evmfs="false" \
+            _git="false" \
             _git_service="github" \
             reallymakepkg \
               -v \
@@ -885,10 +937,14 @@ jobs:
           /entrypoint.sh \
             echo \
               "Home: ${HOME}"
+          echo \
+            "Packages found:"
           find \
             "${PWD}" \
             -iname \
               "*.pkg.tar.*"
+          bash \
+            ".github/android-arm32-fix"
       # - name:
       #     Installs the package.
       #   run: |
@@ -1026,10 +1082,13 @@ jobs:
           pacman \
             -S \
             --noconfirm \
+            "github-cli" \
             "git" \
             "jq" \
             "python" \
             "python-docutils" \
+            "python-pip" \
+            "python-build" \
             "tree"
       - uses:
           actions/checkout@v4.2.2
@@ -1534,6 +1593,7 @@ jobs:
         run: |
           ls
           _evmfs="false" \
+          _git_service="github" \
           recipe-get \
             -o \
               "array" \
@@ -1605,12 +1665,14 @@ jobs:
         run: |
           export \
             _pkgbase="$( \
+              _evmfs="false" \
+              _git_service="github" \
               recipe-get \
                 "PKGBUILD" \
                 "pkgbase")"
           su \
             -c \
-              "cd ${PWD} && _evmfs="false" _git_service="github" reallymakepkg -v -u -w '/home/user/${_pkgbase}-build' -- -df --nocheck --skippgpcheck" - \
+              "cd ${PWD} && _evmfs="false" _git_service="github" reallymakepkg -v -u -w '/home/user/${_pkgbase}-build' -- -df --nocheck --skippgpcheck && ls -lsh" - \
             "user"
       # - name:
       #     Installs the package.
@@ -1693,9 +1755,11 @@ jobs:
           install:
             base-devel
             dos2unix
+            mingw-w64-${{ matrix.env }}-github-cli
             git
             mingw-w64-${{ matrix.env }}-jq
             mingw-w64-${{ matrix.env }}-gcc
+            mingw-w64-${{ matrix.env }}-nodejs
             python-docutils
       - name:
           Upgrade Arch environment.
@@ -1874,6 +1938,9 @@ jobs:
           actions/checkout@v3
       - name:
           Installs recent EVM GNUPG.
+        env:
+          GITHUB_TOKEN:
+            ${{ secrets.GITHUB_TOKEN }}
         run: |
           pacman \
             -S \
@@ -1903,7 +1970,7 @@ jobs:
         run: |
           pacman \
             -Ss \
-            "boost" || \
+            "npm" || \
           true
           dos2unix \
             "PKGBUILD"
@@ -2038,6 +2105,7 @@ jobs:
             "sha256sums"
           PKGEXT='.pkg.tar.xz' \
           _evmfs="false" \
+          _git="false" \
           _git_service="github" \
           makepkg \
             -df \
@@ -2110,9 +2178,9 @@ jobs:
             ${{ github.event.release.upload_url }}
             # ${{ steps.create_release.outputs.upload_url }}
           asset_path:
-            "solidity0.8.28-${{ steps.version.outputs.version }}-${{ matrix.architecture }}.pkg.tar.xz"
+            "solidity0.8.28-${{ steps.version.outputs.version }}-${{ matrix.arch }}.pkg.tar.xz"
           asset_name:
-            "dogeos-windows-solidity0.8.28-${{ steps.version.outputs.version }}-${{ matrix.architecture }}.pkg.tar.xz"
+            "dogeos-windows-solidity0.8.28-${{ steps.version.outputs.version }}-${{ matrix.arch }}.pkg.tar.xz"
           asset_content_type:
             application/gzip
 
@@ -2140,11 +2208,19 @@ jobs:
           /entrypoint.sh \
             pip \
               install \
+                "poetry"
+          /entrypoint.sh \
+            pip \
+              install \
                 "build"
           /entrypoint.sh \
             pip \
               install \
                 "installer"
+          /entrypoint.sh \
+            pip \
+              install \
+                "setuptools"
       - uses:
           actions/checkout@v3.3.0
       - name:
