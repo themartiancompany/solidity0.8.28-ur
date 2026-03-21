@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0
 
-
 #    ---------------------------------------------------------------
 #    Copyright © 2024, 2025, 2026
 #              Pellegrino Prevete
@@ -379,7 +378,7 @@ pkgbase="${_pkg}${pkgver}"
 pkgname=(
   "${pkgbase}"
 )
-pkgrel=112
+pkgrel=113
 _pkgdesc=(
   "Smart contract programming language."
 )
